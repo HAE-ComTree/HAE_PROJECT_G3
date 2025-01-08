@@ -1,0 +1,80 @@
+/*@!Encoding:949*/
+
+variables
+{
+    message 0x331 IVI_EDSS_CSW; // 주기적으로 송신할 메시지 정의
+    message 0x52 IVI_NM_Flag;
+  
+    int NM_flag = 0;
+    int IGN1_flag = 0;
+    int Wakeup = 0;
+  
+    msTimer IVIMessageTimer;      // DMS_Driver_State 송신용 타이머
+}
+
+on timer IVIMessageTimer
+{
+  output(IVI_EDSS_CSW);
+  output(IVI_NM_Flag);
+}
+
+/* GW_NM_BCM 메시지 핸들러 */
+on message GW_NM_IVI
+{
+    if (this.NmSleepCmd_IVI == 0) 
+    {
+        NM_flag = 0; 
+    }
+    else if (this.NmSleepCmd_IVI == 1)
+    {
+        NM_flag = 1; 
+    }
+
+    checkWakeupCondition();
+}
+
+/* VCU_IGN1 메시지 핸들러 */
+on message VCU_IGN1
+{
+    if (this.IGN_State == 0) 
+    {
+        IGN1_flag = 0;
+    }
+    else if (this.IGN_State == 1)
+    {
+        IGN1_flag = 1; 
+    }
+
+    checkWakeupCondition();
+}
+
+/* Wakeup 상태 확인 함수 */
+void checkWakeupCondition()
+{
+    if (IGN1_flag == 1 && NM_flag == 1) 
+    {
+        if (Wakeup == 0) // Wakeup이 처음으로 1이 되었을 때
+        {
+            Wakeup = 1;
+            IVI_NM_Flag.NmSleepFlag_IVI.phys = 1;
+            write("Wakeup is 1: Changing DMS signal behavior.");
+        }
+    }
+    else 
+    {
+        if (Wakeup == 1) // Wakeup이 0으로 변경될 때
+        {
+            Wakeup = 0;
+            IVI_NM_Flag.NmSleepFlag_IVI.phys = 0;
+            write("Wakeup is 0: Reverting DMS signal behavior.");
+        }
+    }
+}
+
+
+/* 초기화 */
+on start
+{
+    write("Simulation started. Starting DMS message transmission...");
+    setTimerCyclic(IVIMessageTimer, 0, 100); // 100ms 주기로 송신
+}
