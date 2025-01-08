@@ -43,7 +43,7 @@ BO_ 995 BCW_Data: 2 Gateway
 BO_ 994 FCA_Data: 1 Gateway
  SG_ FCAState : 0|2@1+ (1,0) [0|3] ""  IVI
 
-BO_ 993 SCC_Speed_Control: 8 Gateway
+BO_ 993 SCC_Speed_Control: 5 Gateway
  SG_ SCC_ACCEL_REF : 24|11@1+ (1,0) [0|2047] "" Vector__XXX
  SG_ SCC_VS_Target : 16|8@1+ (1,0) [0|255] "" Vector__XXX
  SG_ SCC_VS : 8|8@1+ (1,0) [0|255] "" Vector__XXX
@@ -89,7 +89,7 @@ BO_ 960 VCU_WarningSign_State: 1 Gateway
 BO_ 944 VCU_SafeBelt_State: 1 Gateway
  SG_ SafeBelt_State : 0|1@1+ (1,0) [0|1] ""  BCM
 
-BO_ 928 VCU_Steering_Vibration_Sate: 1 Gateway
+BO_ 1008 VCU_Steering_Vibration_Sate: 1 Gateway
  SG_ Steering_Vibration_Sate : 0|1@1+ (1,0) [0|1] ""  BCM
 
 BO_ 913 VCU_Horn_Cmd: 2 Gateway
@@ -113,7 +113,7 @@ BO_ 880 VCU_MoodLED_State: 1 Gateway
  SG_ MoodLED_State : 0|1@1+ (1,0) [0|1] ""  BCM
 
 BO_ 82 IVI_NM_Flag: 1 IVI
- SG_ NmSleepFlag_DMS : 0|1@1+ (1,0) [0|1] ""  Gateway
+ SG_ NmSleepFlag_IVI : 0|1@1+ (1,0) [0|1] ""  Gateway
 
 BO_ 81 DMS_NM_Flag: 1 DMS
  SG_ NmSleepFlag_DMS : 0|1@1+ (1,0) [0|1] ""  Gateway
