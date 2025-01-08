@@ -1,0 +1,63 @@
+VERSION ""
+
+
+NS_ : 
+	NS_DESC_
+	CM_
+	BA_DEF_
+	BA_
+	VAL_
+	CAT_DEF_
+	CAT_
+	FILTER
+	BA_DEF_DEF_
+	EV_DATA_
+	ENVVAR_DATA_
+	SGTYPE_
+	SGTYPE_VAL_
+	BA_DEF_SGTYPE_
+	BA_SGTYPE_
+	SIG_TYPE_REF_
+	VAL_TABLE_
+	SIG_GROUP_
+	SIG_VALTYPE_
+	SIGTYPE_VALTYPE_
+	BO_TX_BU_
+	BA_DEF_REL_
+	BA_REL_
+	BA_DEF_DEF_REL_
+	BU_SG_REL_
+	BU_EV_REL_
+	BU_BO_REL_
+	SG_MUL_VAL_
+
+BS_:
+
+BU_: EMS EPB TCU
+
+
+BO_ 1056 EMS_Engine_Data: 3 EMS
+ SG_ sig_EMS_Brake_ACT : 1|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ sig_EMS_Accel_ACT : 0|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ sig_EMS_Tq_Data : 2|6@1+ (10,0) [0|630] "Nm" Vector__XXX
+ SG_ sig_EMS_RPM_Data : 8|16@1+ (0.25,0) [0|16383.75] "rpm" Vector__XXX
+
+BO_ 1041 EPB_Press_data: 2 EPB
+ SG_ sig_EPB_CylinderPress : 1|12@1+ (0.1,0) [0|409.5] "Bar" Vector__XXX
+ SG_ sig_EPB_CylinderState : 0|1@1+ (1,0) [0|1] "" Vector__XXX
+
+BO_ 1040 EPB_State_Data: 1 EPB
+ SG_ sig_EPB_ACT : 1|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ sig_EPB_State : 0|1@1+ (1,0) [0|1] "" Vector__XXX
+
+BO_ 1024 TCU_Gear_Data: 1 TCU
+ SG_ sig_TCU_GearState : 0|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ sig_TCU_GearType : 1|4@1+ (1,0) [0|15] "" Vector__XXX
+
+
+
+BA_DEF_  "MultiplexExtEnabled" ENUM  "No","Yes";
+BA_DEF_  "BusType" STRING ;
+BA_DEF_DEF_  "MultiplexExtEnabled" "No";
+BA_DEF_DEF_  "BusType" "CAN";
+
