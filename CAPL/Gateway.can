@@ -1,0 +1,70 @@
+﻿/*@!Encoding:65001*/
+includes
+{
+  
+}
+
+variables
+{
+  
+}
+/*
+<Channals info>
+  CAN1(Powertrain)
+  CAN2(Chassis)
+*/
+
+on message Powertrain::TCU_Gear_Data{
+  message *msg;
+  
+  msg=this;
+  msg.can=2;
+  
+  
+  output(msg);
+}
+
+on message Powertrain::EMS_Engine_Data{
+  message *msg;
+  
+  msg=this;
+  msg.can=2;
+  
+  output(msg);
+}
+
+on message Powertrain::EPB_State_Data {
+  message *msg;
+  
+  msg=this;
+  msg.can=2;
+  
+  output(msg);
+}
+
+on message Powertrain::EPB_Press_Data {
+  message *msg;
+  
+  msg=this;
+  msg.can=2;
+  
+  output(msg);
+}
+
+on message Chassis::SCC_Speed_Control {
+  message *msg;
+  
+  msg=this;
+  msg.can=1;
+  
+  output(msg);
+}
+
+on message Chassis::SCC_E_stop {
+  message *msg;
+  
+  msg=this;
+  msg.can=1;
+  
+  output(msg);
+}
