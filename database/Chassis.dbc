@@ -36,11 +36,14 @@ BS_:
 BU_: BCW FCA GateWay SCC MDPS
 
 
+BO_ 1536 VCU_Emergency_Act: 1 GateWay
+ SG_ Emergency_Act : 0|1@1+ (1,0) [0|1] ""  SCC
+
 BO_ 88 BCW_NM_Flag: 1 BCW
- SG_ BCW_Flag : 0|1@1+ (1,1) [0|1] "" Vector__XXX
+ SG_ BCW_Flag : 0|1@1+ (1,1) [0|1] ""  GateWay
 
 BO_ 87 FCA_NM_Flag: 1 FCA
- SG_ FCA_Flag : 0|1@1+ (1,1) [0|1] "" Vector__XXX
+ SG_ FCA_Flag : 0|1@1+ (1,1) [0|1] ""  GateWay
 
 BO_ 73 GW_NM_BCW: 1 GateWay
  SG_ NmSleepCmd_BCW : 0|1@1+ (1,0) [0|1] ""  BCW
@@ -103,16 +106,16 @@ BO_ 544 SCC_LineData: 2 SCC
  SG_ SCC_LKAS_ACT : 0|1@1+ (1,0) [0|1] ""  GateWay
 
 BO_ 529 MDPS_Col_Tq: 2 MDPS
- SG_ ColTq : 0|11@1+ (1,-1024) [-1024|1024] "" Vector__XXX
+ SG_ ColTq : 0|11@1+ (1,-1024) [-1024|1024] ""  GateWay
 
 BO_ 528 MDPS_Out_Tq: 2 MDPS
- SG_ OutTq : 0|12@1+ (0.1,-204.8) [-204.8|204.7] "" Vector__XXX
+ SG_ OutTq : 0|12@1+ (0.1,-204.8) [-204.8|204.7] ""  GateWay
 
 BO_ 513 MDPS_Steering_Tq: 2 MDPS
- SG_ sig_SteeringTq : 0|12@1+ (0.01,-20.48) [-20.48|20.47] "Nm" Vector__XXX
+ SG_ sig_SteeringTq : 0|12@1+ (0.01,-20.48) [-20.48|20.47] "Nm"  GateWay
 
 BO_ 512 MDPS_Steering_Angle: 2 MDPS
- SG_ SteeringAngle : 0|16@1- (0.1,0) [-3276.8|3276.7] "Deg" Vector__XXX
+ SG_ SteeringAngle : 0|16@1- (0.1,0) [-3276.8|3276.7] "Deg"  GateWay
 
 
 
