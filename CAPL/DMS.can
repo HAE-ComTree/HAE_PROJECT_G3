@@ -1,0 +1,99 @@
+/*@!Encoding:949*/
+
+variables
+{
+    message DMS_Driver_State B_DMS_Driver_State;
+  
+    int DrvCautionLv;
+  
+    message DMS_NM_Flag B_DMS_NM_Flag;
+  
+    int NM_flag = 0;
+    int IGN1_flag = 0;
+    int Wakeup = 0;
+  
+    msTimer DMSMessageTimer;      // DMS_Driver_State 송신용 타이머
+}
+
+on timer DMSMessageTimer
+{
+  output(B_DMS_Driver_State);
+  output(B_DMS_NM_Flag);
+
+}
+
+on sysvar sysvar::SystemValue::SysDrvCautionLv
+{
+    DrvCautionLv = @this;
+  
+    B_DMS_Driver_State.DMS_CautionLv.phys = DrvCautionLv;
+}
+
+
+
+/* GW_NM_BCM 메시지 핸들러 */
+on message GW_NM_DMS
+{
+    if (this.NmSleepCmd_DMS.phys == 0) 
+    {
+        NM_flag = 0; 
+    }
+    else if (this.NmSleepCmd_DMS.phys == 1)
+    {
+        NM_flag = 1; 
+    }
+
+    checkWakeupCondition();
+}
+
+/* VCU_IGN1 메시지 핸들러 */
+on message VCU_IGN1
+{
+    if (this.IGN_State.phys == 0) 
+    {
+        IGN1_flag = 0;
+    }
+    else if (this.IGN_State.phys == 1)
+    {
+        IGN1_flag = 1; 
+    }
+
+    checkWakeupCondition();
+}
+
+
+/* Wakeup 상태 확인 함수 */
+void checkWakeupCondition()
+{
+    if (IGN1_flag == 1 && NM_flag == 1) 
+    {
+        if (Wakeup == 0) // Wakeup이 처음으로 1이 되었을 때
+        {
+            Wakeup = 1;
+            B_DMS_NM_Flag.NmSleepFlag_DMS.phys = 1;
+        
+        }
+    }
+    else 
+    {
+        if (Wakeup == 1) // Wakeup이 0으로 변경될 때
+        {
+            Wakeup = 0;
+            B_DMS_NM_Flag.NmSleepFlag_DMS.phys = 0;
+        }
+    }
+}
+
+
+/* 초기화 */
+on start
+{ 
+    @sysvar::SystemValue::SysDrvCautionLv = 0;
+  
+    B_DMS_Driver_State.DMS_CautionLv.phys = 0;
+    DrvCautionLv = 0;
+  
+    B_DMS_NM_Flag.NmSleepFlag_DMS.phys = 0;
+  
+    setTimerCyclic(DMSMessageTimer, 0, 100); // 100ms 주기로 송신
+}
