@@ -1,0 +1,227 @@
+﻿/*@!Encoding:65001*/
+includes
+{
+  
+}
+
+variables
+{
+  UdpSocket gSocket;
+  char gRxBuf[32];
+  char gTxBuf[2];
+  int msgCh = 0;
+  int msgBitLength = 0;
+  int msgData = 0;
+  int i = 0;
+  
+  struct myMapData
+  {
+    byte destDomain;
+    char ethID;
+  };
+  
+  struct myMapData PCanToCGWMap[long]; // 1
+  struct myMapData CCanToCGWMap[long]; // 2
+  struct myMapData BCanToCGWMap[long]; // 3
+  struct myMapData VEthToCGWMap[long]; // 4
+  struct myMapData TEthToCGWMap[long]; // 5
+
+//  struct myMapData CGWToPCanMAP[long]; // 6
+//  struct myMapData CGWToCCanMAP[long]; // 7
+//  struct myMapData CGWToBCanMAP[long]; // 8
+//  struct myMapData CGWToVEthMAP[long]; // 9
+//  struct myMapData CGWToTEthMAP[long]; // 10
+}
+
+on start
+{
+  write("CGW Start");
+  MakeMap();
+  gSocket = UdpSocket::Open(ip_Endpoint(0.0.0.0:1515));
+  gSocket.ReceiveFrom(gRxBuf, elcount(gRxBuf));
+  write("Open UDP Socket");
+}
+
+on preStop
+{
+  gSocket.Close();
+}
+
+void AssignMap(byte source, long thisID, byte ethIDVal, byte destDomainVal)
+{
+  switch(source)
+  {
+    case 1:
+      PCanToCGWMap[thisID].ethID = (char)ethIDVal;
+      write("%d %c", PCanToCGWMap[thisID].ethID);
+      PCanToCGWMap[thisID].destDomain = destDomainVal;
+      break;
+    case 2:
+      CCanToCGWMap[thisID].ethID = (char)ethIDVal;
+      CCanToCGWMap[thisID].destDomain = destDomainVal;
+      break;
+    case 3:
+      BCanToCGWMap[thisID].ethID = (char)ethIDVal;
+      BCanToCGWMap[thisID].destDomain = destDomainVal;
+      break;
+    case 4:
+      VEthToCGWMap[thisID].ethID = (char)ethIDVal;
+      VEthToCGWMap[thisID].destDomain = destDomainVal;
+      break;
+    case 5:
+      TEthToCGWMap[thisID].ethID = (char)ethIDVal;
+      TEthToCGWMap[thisID].destDomain = destDomainVal;
+      break;
+  }
+}
+
+byte MakeDestDomainCode(byte PCan, byte CCan, byte BCan, byte VCU, byte TMU)
+{
+  byte DestDomain = 0;
+  DestDomain = PCan;
+  DestDomain = (CCan << 1) | DestDomain;
+  DestDomain = (BCan << 2) | DestDomain;
+  DestDomain = (VCU << 3) | DestDomain;
+  DestDomain = (TMU << 4) | DestDomain;
+  return DestDomain;
+}
+void MakeMap()
+{
+  //void AssignMap(byte source, long thisID, int ethID, byte destDomain)
+  //byte MakeDestDomainCode(p-can, c, b, vcu, tmu)
+
+  AssignMap(1, 0x100, 4, MakeDestDomainCode(0,0,0,1,0)); //P -> V
+  AssignMap(1, 0x101, 4, MakeDestDomainCode(0,0,0,0,1)); //P -> T
+  AssignMap(1, 0x102, 5, MakeDestDomainCode(0,0,0,0,1));
+  AssignMap(1, 0x103, 0, MakeDestDomainCode(0,1,1,0,0)); //P -> CB
+  //AssignMap(1, 0x101, 
+}
+
+void OnUdpReceiveFrom(dword socket, long result, IP_Endpoint remoteEndpoint, char buffer[], dword size)
+{
+  if(result == 0)
+  {
+    char endpointString[30];
+    remoteEndpoint.PrintEndPointToString(endpointString);
+    write("Sender IP : %s", endpointString);
+    write("Recv Data : %s", buffer);
+  }
+  else
+  {
+    write("UdpReceive ERROR!!");
+  }
+  gSocket.ReceiveFrom(gRxBuf, elcount(gRxBuf));
+}
+
+void ForwardingMsg(message *RcvMsg, message *ForwardMsg)
+{
+  if((PCanToCGWMap[RcvMsg.id].destDomain >> 0) & 1 == 1) //Fowarding To P-Can
+  {
+    ForwardMsg = RcvMsg;
+    ForwardMsg.can = 1;
+    write("P %d", ForwardMsg.id);
+    output (ForwardMsg);
+  }
+  if((PCanToCGWMap[RcvMsg.id].destDomain >> 1) & 1 == 1) //Fowarding To C-Can
+  {
+    ForwardMsg = RcvMsg;
+    ForwardMsg.can = 2;
+    write("C %d", ForwardMsg.id);
+    output (ForwardMsg);
+  }
+  if((PCanToCGWMap[RcvMsg.id].destDomain >> 2) & 1 == 1) //Fowarding To B-Can
+  {
+    ForwardMsg = RcvMsg;
+    ForwardMsg.can = 3;
+    write("B %d", ForwardMsg.id);
+    output (ForwardMsg);
+  }
+  if((PCanToCGWMap[RcvMsg.id].destDomain >> 3) & 1 == 1) //Fowarding To Eth Domain VCU
+  {
+    gTxBuf[0] = PCanToCGWMap[RcvMsg.id].ethID;
+    gTxBuf[1] = RcvMsg.byte(0);
+    write("V %d %d",(byte)gTxBuf[0] ,(byte)gTxBuf[1]);
+    gSocket.SendTo(Ip_Endpoint(192.168.1.34:8010), gTxBuf, (dword)2);
+    gSocket.ReceiveFrom(gRxBuf, elcount(gRxBuf));
+  }
+  if((PCanToCGWMap[RcvMsg.id].destDomain >> 4) & 1 == 1) //Fowarding To Eth Domain TMU
+  {
+    gTxBuf[0] = PCanToCGWMap[RcvMsg.id].ethID;
+    gTxBuf[1] = RcvMsg.byte(0);
+    write("T %d %d",(byte)gTxBuf[0] ,(byte)gTxBuf[1]);
+    gSocket.SendTo(Ip_Endpoint(192.168.1.33:8008), gTxBuf, (dword)2);
+    gSocket.ReceiveFrom(gRxBuf, elcount(gRxBuf));
+  }
+}
+
+on message P_CANv.*
+{
+  message *thisMsg;
+  message *ForwardMsg;
+  
+  thisMsg = this;
+  if (PCanToCGWMap.containsKey(this.id)){
+    ForwardingMsg(thisMsg, ForwardMsg);
+  }
+  else
+  {
+    write("there is no %x", this.id);
+  }
+}
+
+////////////////////////////////////////////////////////test////////////////////////////////////////////////////
+//on key 'v'
+//{
+//  gTxBuf[0] = 4;
+//  gTxBuf[1] = 1;
+//  gSocket.SendTo(Ip_Endpoint(192.168.1.34:8010), gTxBuf, strlen(gTxBuf));
+//  gSocket.ReceiveFrom(gRxBuf, elcount(gRxBuf));
+//}
+
+//on key 't'
+//{
+//  gTxBuf[0] = 4;
+//  gTxBuf[1] = 1;
+//  gSocket.SendTo(Ip_Endpoint(192.168.1.33:8008), gTxBuf, strlen(gTxBuf));
+//  gTxBuf[0] = 5;
+//  gTxBuf[1] = 15;
+//  gSocket.SendTo(Ip_Endpoint(192.168.1.33:8008), gTxBuf, strlen(gTxBuf));
+//  gSocket.ReceiveFrom(gRxBuf, elcount(gRxBuf));
+//}
+
+on key '1'
+{
+  message P_CANv.0x101 myMsg1;
+  myMsg1.dlc = 2;
+  myMsg1.byte(0) = 1;
+  myMsg1.byte(1) = 1;
+  output (myMsg1);
+}
+
+on key '2'
+{
+  message P_CANv.0x102 myMsg1;
+  myMsg1.dlc = 2;
+  myMsg1.byte(0) = 0xCB;
+  myMsg1.byte(1) = 22;
+  output (myMsg1);
+}
+
+on key '3'
+{
+  message P_CANv.0x103 myMsg1;
+  myMsg1.dlc = 2;
+  myMsg1.byte(0) = 0xCB;
+  myMsg1.byte(1) = 55;
+  output (myMsg1);
+}
+
+on message *
+{
+  msgCh = this.can;
+  msgBitLength = this.DataLength;
+  for(i = 0; i < msgBitLength; i++)
+  {
+    write("CAN %d byte %d : %d", msgCh, i, this.byte(i));
+  }
+}
