@@ -36,6 +36,9 @@ BS_:
 BU_: Gateway IVI DMS BCM
 
 
+BO_ 769 BCM_5s: 1 BCM
+ SG_ Count_5s : 0|1@1+ (1,0) [0|1] ""  Gateway
+
 BO_ 995 BCW_Data: 2 Gateway
  SG_ BCWState : 2|2@1+ (1,0) [0|3] ""  IVI
  SG_ BCW_LR : 0|2@1+ (1,0) [0|3] ""  IVI
@@ -145,16 +148,10 @@ BO_ 849 BCM_AirBag_Pos: 1 BCM
 BO_ 848 BCM_AirBag_state: 1 BCM
  SG_ AirBag_state : 0|1@1+ (1,0) [0|1] ""  Gateway
 
-BO_ 835 BCM_Seat_RR: 1 BCM
- SG_ Seat_RR : 0|1@1+ (1,0) [0|1] ""  Gateway
-
-BO_ 834 BCM_Seat_RL: 1 BCM
- SG_ Seat_RL : 0|1@1+ (1,0) [0|1] ""  Gateway
-
-BO_ 833 BCM_Seat_FR: 1 BCM
- SG_ Seat_FL : 0|1@1+ (1,0) [0|1] ""  Gateway
-
-BO_ 832 BCM_Seat_FL: 1 BCM
+BO_ 832 BCM_Seat: 1 BCM
+ SG_ Seat_RR : 3|1@1+ (1,0) [0|1] ""  Gateway
+ SG_ Seat_RL : 2|1@1+ (1,0) [0|1] ""  Gateway
+ SG_ Seat_FR : 1|1@1+ (1,0) [0|1] ""  Gateway
  SG_ Seat_FL : 0|1@1+ (1,0) [0|1] ""  Gateway
 
 BO_ 817 IVI_EDSS_CSW: 1 IVI
@@ -175,7 +172,7 @@ BO_ 786 BCM_Wheel_Speed_RL: 1 BCM
 BO_ 785 BCM_Wheel_Speed_FR: 1 BCM
  SG_ Wheel_Speed_FR : 0|8@1+ (1,0) [0|255] "km"  Gateway
 
-BO_ 784 BCM_Wheel_Speed_FL: 1 BCM
+BO_ 784 BCM_Wheel_Speed: 1 BCM
  SG_ Wheel_Speed_FL : 0|8@1+ (1,0) [0|255] "km"  Gateway
 
 BO_ 768 BCM_EDSS_SW_STATE: 1 BCM
