@@ -1,0 +1,120 @@
+﻿/*@!Encoding:65001*/
+includes
+{
+  
+}
+
+variables
+{
+  UdpSocket gSocket;
+  char gRxBuf[1024];
+  int DMS_Driver_State = 0;
+  int EDSS_Sw_State = 0; //EDSS 스위치가 눌렸는지
+  int EDSS_State = 0; //EDSS(운전자 깨우기)가 시작했는지
+  int TMU_Ecall_State = 0;
+  int Emergency_Car_Stop_State = 0;
+  msTimer Periodic_EDSS_Start_Condition_Check;
+  msTimer Periodic_Send_VCU_IVI_MSG;
+}
+
+on start
+{
+  gSocket = UdpSocket::Open(ip_Endpoint(192.168.1.34:8010));
+  gSocket.ReceiveFrom(gRxBuf, elcount(gRxBuf));
+  setTimerCyclic(Periodic_EDSS_Start_Condition_Check, 100);
+  setTimerCyclic(Periodic_Send_VCU_IVI_MSG, 500);
+}
+
+on preStop
+{
+  gSocket.Close();
+  cancelTimer(Periodic_Send_VCU_IVI_MSG);
+}
+
+on timer Periodic_EDSS_Start_Condition_Check //EDSS 시작 조건을 주기적으로 확인 및 [1. VCU_Body_Act] 메시지 전송
+{
+  byte sendData[10];
+  if(DMS_Driver_State >= 1 || EDSS_Sw_State == 1)
+  {
+    sendData[0] = 1; //ID : 1
+    sendData[1] = 127;
+    
+    write("[VCU] EDSS Start Condition Satisfied, Wake Up Driver");
+    gSocket.SendTo(ip_Endpoint(192.168.1.25:8012), sendData, 2); //CGW로 VCU_Body_Act 메시지 전송
+    EDSS_State = 1;
+    cancelTimer(Periodic_EDSS_Start_Condition_Check);
+  }
+}
+
+on timer Periodic_Send_VCU_IVI_MSG
+{
+  byte sendData[10];
+  sendData[0] = 2;
+  sendData[1] = (Emergency_Car_Stop_State << 2) || (EDSS_State << 1) || (TMU_Ecall_State);
+  gSocket.SendTo(ip_Endpoint(192.168.1.25:8012), sendData, 2); //CGW로 VCU_Body_Act 메시지 전송
+}
+
+OnUdpReceiveFrom(dword socket, long result, IP_Endpoint remoteEndpoint, byte buffer[], dword size)
+{
+  write("[VCU] UDP event handler start");
+  if(result == 0)
+  {
+    byte ID;
+    byte payload;
+    int Driver_SW = 0;
+    int Passenger_SW = 0;
+    char sendData[10];
+    
+    ID = buffer[0];
+    payload = buffer[1];
+    
+    switch(ID)
+    {
+      case 4: //4. VCU_PGear_Act 수신
+        if(DMS_Driver_State == 5 && payload == 1) //기어가 P단으로 설정되고, Driver_State가 5단계인 경우 TMU에 신고 명령
+        {
+          write("[VCU] car stop, activate Ecall");
+          sendData[0] = 3;
+          sendData[1] = 1;
+          gSocket.SendTo(ip_Endpoint(192.168.1.33:8008), sendData, strlen(sendData));
+          TMU_Ecall_State = 1;
+          break;
+        }
+        else
+        {
+          break;
+        }
+        
+      case 9: //9. DMS_Driver_State 수신
+        DMS_Driver_State = payload;
+        if(DMS_Driver_State == 5)//DMS_Driver_State가 5면 안전 정차 시작
+        {
+          sendData[0] = 5;
+          sendData[1] = 1;
+          write("[VCU] Driver Doesn't Wake Up -> DMS_Driver_State == 5, send VCU_Emergency_Act");
+          gSocket.SendTo(ip_Endpoint(192.168.1.25:8012), sendData, 2); //CGW로 VCU_Emergency_Act 메시지 전송
+          Emergency_Car_Stop_State = 1;
+        }
+        break;
+        
+      case 8: //8. BCM_EDSS_SW_STATE 수신
+        Driver_SW = (payload & 0xF0) >> 4; //상위 4비트 추출
+        Passenger_SW = payload & 0x0F; //하위 4비트 추출
+        
+        if(Driver_SW == 1 || Passenger_SW == 1) //둘 중 하나라도 1이면 EDSS_Sw_State = 1
+        {
+          EDSS_Sw_State = 1;
+        }
+        else
+        {
+          EDSS_Sw_State = 0;
+        }
+        break;
+        
+      default :
+        break;
+    } 
+  }
+  gSocket.ReceiveFrom(gRxBuf, elcount(gRxBuf));
+}
+
