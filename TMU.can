@@ -1,0 +1,122 @@
+﻿/*@!Encoding:65001*/
+includes
+{
+}
+
+variables
+{
+  UdpSocket gSocket1;
+  UdpSocket gSocket2;
+  char gRxBuf1[1024];
+  char gRxBuf2[1024];
+  int airbagDeployStatus = 0;
+  int peopleCount = 1;
+  int driverSeat = 1;
+  int passengerSeat = 0;
+  int backSeatL = 0;
+  int backSeatR = 0;
+  float latitude = 37.5093;
+  float longitude = 127.0626;
+  float car_direction = 187.4;
+  int fuel_category = 1; // 0 : 휘발유 , 1 : 경유
+}
+
+on start
+{
+  gSocket1 = UdpSocket::Open(ip_Endpoint(192.168.1.33:8008));
+  gSocket2 = UdpSocket::Open(ip_Endpoint(192.168.201.30:8008));
+  gSocket1.ReceiveFrom(gRxBuf1, elcount(gRxBuf1));
+  gSocket2.ReceiveFrom(gRxBuf2, elcount(gRxBuf2));
+}
+
+on preStop
+{
+  gSocket1.Close();
+  gSocket2.Close();
+}
+
+void OnUdpReceiveFrom(UdpSocket socket, long result, 
+      IP_Endpoint remoteEndpoint, 
+      char buffer[], dword size)
+{
+  write("[TMU] UDP event hanlder start");
+  if(result == 0)
+  { 
+    byte ID;
+    byte payload;
+    char sendData[1000];
+    
+    ID = (byte)buffer[0];
+    payload = (byte)buffer[1];
+    
+    if(socket == gSocket1)
+    {
+      switch(ID)
+      {
+        case 3: //VCU_ECall_Act 수신
+          {
+            if(payload == 1)
+            {
+              //MSD 구조 : 에어백, 탑승 인원, 운전석 탑승 여부, 조수석 탑승 여부, 좌측 뒷자석 탑승 여부, 우측 뒷자석 탑승 여부
+              sendData[0] = airbagDeployStatus;
+              sendData[1] = peopleCount;
+              sendData[2] = driverSeat;
+              sendData[3] = passengerSeat;
+              sendData[4] = backSeatL;
+              sendData[5] = backSeatR;
+              gSocket2.SendTo(ip_Endpoint(192.168.201.24:9001), sendData, 6);
+              break;
+            }
+            else
+            {
+              break;
+            }
+          }
+        case 4: //BCM_AirBag_state 수신
+          {
+            airbagDeployStatus = payload;
+            write("[TMU] airbag state received : %d", airbagDeployStatus);
+            break;
+          }
+        case 5: //BCM_Seat_Count 수신
+          {
+            driverSeat = payload & 0x01;
+            passengerSeat = (payload >> 1) & 0x01;
+            backSeatL = (payload >> 2) & 0x01;
+            backSeatR = (payload >> 3) & 0x01;
+            
+            peopleCount = driverSeat + passengerSeat + backSeatL + backSeatR;
+            break;
+          }
+      }
+      gSocket1.ReceiveFrom(gRxBuf1, elcount(gRxBuf1));
+    }
+    
+    else if(socket == gSocket2)
+    {
+      switch (ID)
+      {
+        case 9: //receive server sending ACK
+          sendData[0] = 9;
+          sendData[1] = 1;
+          
+          write("[TMU] server ack");
+          gSocket1.SendTo(ip_Endpoint(192.168.1.25:8012), sendData, 2);
+          break;
+        
+        case 8: //receive 119 server call
+          sendData[0] = 8;
+          sendData[1] = 1;
+          
+          write("[TMU] Reception of control center calls");
+          gSocket1.SendTo(ip_Endpoint(192.168.1.25:8012), sendData, 2);
+          break;
+          
+        default:
+          break;
+      }
+    }
+  }
+}
+
+
