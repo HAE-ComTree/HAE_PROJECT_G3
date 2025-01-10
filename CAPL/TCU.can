@@ -1,0 +1,101 @@
+﻿/*@!Encoding:65001*/
+includes
+{
+  
+}
+
+variables {
+  int currGear=1;
+  float rpm;
+  int flag = 0;
+  float preRpm;
+  
+  message Powertrain::TCU_Gear_Data gearData;
+}
+
+on start {
+  currGear = 1;
+  rpm = $Powertrain::EMS_Engine_Data::EMS_RPM_Data;
+  
+  $Powertrain::TCU_Gear_Data::TCU_GearType = currGear;
+  output(gearData);
+}
+
+on message Powertrain::EMS_Engine_Data {
+  rpm = @sysvar::EMS_Var::EngineRPM;
+  
+  if(currGear == 1) {
+    if(rpm > 3000) {
+      currGear++;
+      flag=1;
+      preRpm = 1300;
+      $Powertrain::TCU_Gear_Data::TCU_GearType = currGear;
+      output(gearData);
+    }
+  }
+  else if(currGear == 2) {
+    if(rpm < preRpm && rpm <= 1300) {
+      currGear--;
+      flag = 1;
+      preRpm = 4000;
+      gearData.TCU_GearType = currGear;
+      output(gearData);
+    }
+    if(rpm > preRpm && rpm >= 4000) {
+      currGear++;
+      flag=1;
+      preRpm = 2000;
+      $Powertrain::TCU_Gear_Data::TCU_GearType = currGear;
+      output(gearData);
+    }
+  }
+    else if(currGear == 3) {
+    if(rpm < preRpm && rpm <= 2000) {
+      currGear--;
+      flag = 1;
+      preRpm = 5000;
+      gearData.TCU_GearType = currGear;
+      output(gearData);
+    }
+    if(rpm > preRpm && rpm >= 5000) {
+      currGear++;
+      flag=1;
+      preRpm = 2500;
+      $Powertrain::TCU_Gear_Data::TCU_GearType = currGear;
+      output(gearData);
+    }
+  }
+    else if(currGear == 4) {
+    if(rpm < preRpm && rpm <= 2500) {
+      currGear--;
+      flag = 1;
+      preRpm = 6000;
+      gearData.TCU_GearType = currGear;
+      output(gearData);
+    }
+    if(rpm > preRpm && rpm >= 6000) {
+      currGear++;
+      flag=1;
+      preRpm = 3000;
+      $Powertrain::TCU_Gear_Data::TCU_GearType = currGear;
+      output(gearData);
+    }
+  }
+  else if (currGear==5) {
+    if(rpm<preRpm && rpm <= 3000) {
+      currGear--;
+      flag=1;
+      preRpm=8000;
+      $Powertrain::TCU_Gear_Data::TCU_GearType = currGear;
+      output(gearData);
+    }
+  }
+  else {
+    ;
+  }
+  
+  if(!flag) preRpm=rpm;
+  
+  $Powertrain::TCU_Gear_Data::TCU_GearType=currGear;
+  flag=0;
+}
