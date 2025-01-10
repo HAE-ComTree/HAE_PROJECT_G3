@@ -2,11 +2,9 @@
 
 variables
 {
-    message DMS_Driver_State B_DMS_Driver_State;
+    message DMS_Driver_State b_DMS_Driver_State; int Driver_State;
   
-    int DrvCautionLv;
-  
-    message DMS_NM_Flag B_DMS_NM_Flag;
+    message DMS_NM_Flag b_DMS_NM_Flag;
   
     int NM_flag = 0;
     int IGN1_flag = 0;
@@ -16,20 +14,10 @@ variables
 }
 
 on timer DMSMessageTimer
-{
-  output(B_DMS_Driver_State);
-  output(B_DMS_NM_Flag);
-
+{ 
+  output(b_DMS_NM_Flag);
+  output(b_DMS_Driver_State);
 }
-
-on sysvar sysvar::SystemValue::SysDrvCautionLv
-{
-    DrvCautionLv = @this;
-  
-    B_DMS_Driver_State.DMS_CautionLv.phys = DrvCautionLv;
-}
-
-
 
 /* GW_NM_BCM 메시지 핸들러 */
 on message GW_NM_DMS
@@ -70,7 +58,7 @@ void checkWakeupCondition()
         if (Wakeup == 0) // Wakeup이 처음으로 1이 되었을 때
         {
             Wakeup = 1;
-            B_DMS_NM_Flag.NmSleepFlag_DMS.phys = 1;
+            b_DMS_NM_Flag.NmSleepFlag_DMS.phys = 1;
         
         }
     }
@@ -79,7 +67,7 @@ void checkWakeupCondition()
         if (Wakeup == 1) // Wakeup이 0으로 변경될 때
         {
             Wakeup = 0;
-            B_DMS_NM_Flag.NmSleepFlag_DMS.phys = 0;
+            b_DMS_NM_Flag.NmSleepFlag_DMS.phys = 0;
         }
     }
 }
@@ -88,12 +76,17 @@ void checkWakeupCondition()
 /* 초기화 */
 on start
 { 
-    @sysvar::SystemValue::SysDrvCautionLv = 0;
+    @sysvar::DMS::sv_DMS_CautionLv = 0;
   
-    B_DMS_Driver_State.DMS_CautionLv.phys = 0;
-    DrvCautionLv = 0;
+    b_DMS_NM_Flag.NmSleepFlag_DMS.phys = 0;
   
-    B_DMS_NM_Flag.NmSleepFlag_DMS.phys = 0;
+    b_DMS_Driver_State.DMS_CautionLv.phys = 0; Driver_State = 0;
   
     setTimerCyclic(DMSMessageTimer, 0, 100); // 100ms 주기로 송신
+}
+
+on sysvar sysvar::DMS::sv_DMS_CautionLv
+{
+    Driver_State = @this;
+    b_DMS_Driver_State.DMS_CautionLv.phys = Driver_State;
 }
