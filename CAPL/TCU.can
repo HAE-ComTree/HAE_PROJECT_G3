@@ -5,12 +5,21 @@ includes
 }
 
 variables {
+  msTimer tmrTCU;
+  
   int currGear=1;
   float rpm;
   int flag = 0;
   float preRpm;
   
   message Powertrain::TCU_Gear_Data gearData;
+  message Powertrain::TCU_NM_Flag P_TCU_NM_Flag;
+  message Powertrain::TCU_Gear_Data P_TCU_Gear_Data;
+}
+
+on timer tmrTCU {
+  output(P_TCU_NM_Flag);
+  output(P_TCU_Gear_Data);
 }
 
 on start {
@@ -19,6 +28,13 @@ on start {
   
   $Powertrain::TCU_Gear_Data::TCU_GearType = currGear;
   output(gearData);
+  
+  setTimerCyclic(tmrTCU, 100);
+  $Powertrain::TCU::TCU_Gear_Data::TCU_GearState.phys = 0;
+  $Powertrain::TCU::TCU_Gear_Data::TCU_GearType.phys = 1;
+  $Powertrain::TCU::TCU_Gear_Data::TCU_Parking_Gear.phys = 0;
+  $Powertrain::TCU::TCU_NM_Flag::TCU_Flag.phys = 0;
+  
 }
 
 on message Powertrain::EMS_Engine_Data {

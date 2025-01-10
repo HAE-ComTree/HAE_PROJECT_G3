@@ -1,10 +1,13 @@
 ﻿/*@!Encoding:65001*/
+
+
 includes
 {
   
 }
 
 variables {
+  msTimer tmrEMS;
   float gearratio[6] = {0, 4.639, 2.826, 1.841, 1.386, 1.000};
   int currGear = 1;
   
@@ -14,6 +17,13 @@ variables {
   int gearIndex = 1;
   
   message Powertrain::EMS_Engine_Data engMsg;
+  message Powertrain::EMS_NM_Flag P_EMS_NM_Flag;
+  message Powertrain::EMS_Engine_Data P_EMS_Engine_Data;
+}
+
+on timer tmrEMS {
+  output(P_EMS_NM_Flag);
+  output(P_EMS_Engine_Data);
 }
 
 on start {
@@ -21,21 +31,21 @@ on start {
   @sysvar::EMS_Var::EngineRPM = 1100;
   $Powertrain::EMS_Engine_Data::EMS_RPM_Data = 1100;
   currGear = 1;
-}
 
-on key 'q' {
-  if(@sysvar::EMS_Var::speed_chk < 255)
-  @sysvar::EMS_Var::speed_chk += 5;
-}
-
-on key 'w' {
-  if(@sysvar::EMS_Var::speed_chk > 5) {
-    @sysvar::EMS_Var::speed_chk -= 5;
-  }
+  setTimerCyclic(tmrEMS, 0, 100); // 100ms 주기로 송신
+  $Powertrain::EMS_NM_Flag::EMS_Flag.phys = 0;
+  $Powertrain::EMS_Engine_Data::EMS_RPM_Data.phys = 1100;
+  $Powertrain::EMS_Engine_Data::EMS_Accel_ACT.phys = 0;
+  $Powertrain::EMS_Engine_Data::EMS_Brake_ACT.phys = 0;
+  $Powertrain::EMS_Engine_Data::EMS_Tq_Data.phys = 0;
 }
 
 on message Powertrain::TCU_Gear_Data {
   currGear = this.TCU_GearType;
+}
+
+on message Powertrain::GW_BCM_WheelSpd_FL {
+  @sysvar::EMS_Var::speed_chk = $Powertrain::GateWay::GW_BCM_WheelSpd_FL::WheelSpd_FL;
 }
 
 on sysvar_update sysvar::EMS_Var::speed_chk {
