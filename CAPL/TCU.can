@@ -5,12 +5,22 @@ includes
 }
 
 variables {
+  msTimer tmrTCU;
+  msTimer ActTCU;
+  
   int currGear=1;
   float rpm;
   int flag = 0;
   float preRpm;
   
   message Powertrain::TCU_Gear_Data gearData;
+  message Powertrain::TCU_NM_Flag P_TCU_NM_Flag;
+  message Powertrain::TCU_Gear_Data P_TCU_Gear_Data;
+}
+
+on timer tmrTCU {
+  output(P_TCU_NM_Flag);
+  output(P_TCU_Gear_Data);
 }
 
 on start {
@@ -18,11 +28,30 @@ on start {
   rpm = $Powertrain::EMS_Engine_Data::EMS_RPM_Data;
   
   $Powertrain::TCU_Gear_Data::TCU_GearType = currGear;
-  output(gearData);
+  
+  setTimerCyclic(tmrTCU, 0, 50);
+  $Powertrain::TCU::TCU_Gear_Data::TCU_GearState.phys = 0;
+  $Powertrain::TCU::TCU_Gear_Data::TCU_GearType.phys = 1;
+  $Powertrain::TCU::TCU_Gear_Data::TCU_Parking_Gear.phys = 0;
+  $Powertrain::TCU::TCU_NM_Flag::TCU_Flag.phys = 0;
+  setTimer(ActTCU, 50);
 }
 
-on message Powertrain::EMS_Engine_Data {
-  rpm = @sysvar::EMS_Var::EngineRPM;
+on message GW_SSC_CmdSta {
+  if(this.SCC_StopStaSig == 1) {
+    currGear = 0;
+    preRpm =3000;
+    flag = 1;
+    $Powertrain::TCU_Gear_Data::TCU_GearType = currGear;
+    cancelTimer(tmrTCU);
+  }
+}
+
+on message EMS_Engine_Data {
+  rpm = this.EMS_RPM_Data;
+}
+
+on timer ActTCU {
   
   if(currGear == 1) {
     if(rpm > 3000) {
@@ -30,7 +59,6 @@ on message Powertrain::EMS_Engine_Data {
       flag=1;
       preRpm = 1300;
       $Powertrain::TCU_Gear_Data::TCU_GearType = currGear;
-      output(gearData);
     }
   }
   else if(currGear == 2) {
@@ -39,14 +67,12 @@ on message Powertrain::EMS_Engine_Data {
       flag = 1;
       preRpm = 4000;
       gearData.TCU_GearType = currGear;
-      output(gearData);
     }
     if(rpm > preRpm && rpm >= 4000) {
       currGear++;
       flag=1;
       preRpm = 2000;
       $Powertrain::TCU_Gear_Data::TCU_GearType = currGear;
-      output(gearData);
     }
   }
     else if(currGear == 3) {
@@ -55,14 +81,12 @@ on message Powertrain::EMS_Engine_Data {
       flag = 1;
       preRpm = 5000;
       gearData.TCU_GearType = currGear;
-      output(gearData);
     }
     if(rpm > preRpm && rpm >= 5000) {
       currGear++;
       flag=1;
       preRpm = 2500;
       $Powertrain::TCU_Gear_Data::TCU_GearType = currGear;
-      output(gearData);
     }
   }
     else if(currGear == 4) {
@@ -71,14 +95,12 @@ on message Powertrain::EMS_Engine_Data {
       flag = 1;
       preRpm = 6000;
       gearData.TCU_GearType = currGear;
-      output(gearData);
     }
     if(rpm > preRpm && rpm >= 6000) {
       currGear++;
       flag=1;
       preRpm = 3000;
       $Powertrain::TCU_Gear_Data::TCU_GearType = currGear;
-      output(gearData);
     }
   }
   else if (currGear==5) {
@@ -87,15 +109,13 @@ on message Powertrain::EMS_Engine_Data {
       flag=1;
       preRpm=8000;
       $Powertrain::TCU_Gear_Data::TCU_GearType = currGear;
-      output(gearData);
     }
   }
-  else {
-    ;
-  }
+  else {}
   
   if(!flag) preRpm=rpm;
   
   $Powertrain::TCU_Gear_Data::TCU_GearType=currGear;
   flag=0;
+  setTimer(ActTCU, 50);
 }

@@ -1,55 +1,157 @@
 ﻿/*@!Encoding:65001*/
+
+
 includes
 {
   
 }
 
 variables {
-  float gearratio[6] = {0, 4.639, 2.826, 1.841, 1.386, 1.000};
-  int currGear = 1;
+  msTimer tmrEMS;
+  msTimer ActEMS;
+  float gearratio[6] = {0, 4.639, 2.826, 1.841, 1.386, 1.000};  //기어비
+  int currGear = 1; //현재 기어
   
-  float finalDriverRatio = 3.909;
+  const float finalDriverRatio = 3.909;
   
-  float speedMps = 0.0;
+  float rpm = 0;
   int gearIndex = 1;
   
   message Powertrain::EMS_Engine_Data engMsg;
+  message Powertrain::EMS_NM_Flag P_EMS_NM_Flag;
+  message Powertrain::EMS_Engine_Data P_EMS_Engine_Data;
+  
+  /*-----------------------------------------------------------------------------*/
+
+  int WheelSpd;
+  int LaneFlag; //LaneFlag = 1; 이면 차선이동할때 차량 속도 변화(초기 속도 80km)
+  int StopFlag; //StopFlag = 1; 이면 차량감소 로직시작(~~0km 될떄까지) 몇초동안 감소할지는 이소혜 책임이랑 상의필요
+  int WaitFlag;
+
+  int finalSpeed = 0;      // 목표 속도 (km/h)
+  float duration = 1.0;    // 감속 시간 (초)
+  float interval = 0.05;   // 50ms 간격으로 업데이트
+  int speedDecrement;      // 속도 감소량
+  int steps;               // 감속 단계 수
+  
+  /*-----------------------------------------------------------------------------*/
+    
+  
+  /*-----------------------------------------------------------------------------*/
+  msTimer Stop_1sCnt; // 정지 상태 진입 시 1s 카운터
+  msTimer StopDcreaseTimer; // 50ms timer 
+  int count1s;
+  /*-----------------------------------------------------------------------------*/
+
 }
 
 on start {
-  @sysvar::EMS_Var::speed_chk = 4;
-  @sysvar::EMS_Var::EngineRPM = 1100;
-  $Powertrain::EMS_Engine_Data::EMS_RPM_Data = 1100;
+  $Powertrain::EMS_Engine_Data::EMS_RPM_Data = 0;
   currGear = 1;
+
+  setTimerCyclic(tmrEMS, 0, 50); // 100ms 주기로 송신
+  $Powertrain::EMS_NM_Flag::EMS_Flag.phys = 0;
+  $Powertrain::EMS_Engine_Data::EMS_RPM_Data.phys = 1100;
+  $Powertrain::EMS_Engine_Data::EMS_Accel_ACT.phys = 0;
+  $Powertrain::EMS_Engine_Data::EMS_Brake_ACT.phys = 0;
+  $Powertrain::EMS_Engine_Data::EMS_Tq_Data.phys = 0;
+  
+  /*-----------------------------------------------------------------------------*/
+    WheelSpd = 80;
+    LaneFlag = 0;
+    StopFlag = 0;   
+    WaitFlag = 0;
+  
+    finalSpeed = 0.0;    // 목표 속도 (km/h)
+    duration = 1.0;      // 감속 시간 (초)
+    interval = 0.1;      // 100ms 간격으로 업데이트
+  
+    setTimer(Stop_1sCnt, 100);
+    setTimerCyclic(Stop_1sCnt,0,50);
+    count1s = 0;
+  /*-----------------------------------------------------------------------------*/
 }
 
-on key 'q' {
-  if(@sysvar::EMS_Var::speed_chk < 255)
-  @sysvar::EMS_Var::speed_chk += 5;
+on timer tmrEMS {
+  output(P_EMS_NM_Flag);
+  output(P_EMS_Engine_Data);
 }
 
-on key 'w' {
-  if(@sysvar::EMS_Var::speed_chk > 5) {
-    @sysvar::EMS_Var::speed_chk -= 5;
-  }
-}
-
-on message Powertrain::TCU_Gear_Data {
-  currGear = this.TCU_GearType;
-}
-
-on sysvar_update sysvar::EMS_Var::speed_chk {
+on timer ActEMS {
   gearIndex = currGear;  // gear=1 => index=0
   
   // gearIndex 안전 범위
   if(gearIndex < 1) gearIndex=1;
   if(gearIndex > 5) gearIndex=5;
 
-  // rpm 계산
-  @sysvar::EMS_Var::EngineRPM = (@sysvar::EMS_Var::speed_chk*gearratio[gearIndex]*finalDriverRatio*1000000)/(3.78*240*50+4800*18);
-  $Powertrain::EMS_Engine_Data::EMS_RPM_Data = @sysvar::EMS_Var::EngineRPM;
+  if(WheelSpd != 0) {
+    // rpm 계산
+    rpm = (WheelSpd*gearratio[gearIndex]*finalDriverRatio*1000000)/(3.78*240*50+4800*18);
+    $Powertrain::EMS_Engine_Data::EMS_RPM_Data = rpm;
+    setTimer(ActEMS, 50);
+  }
+  else {
+    $Powertrain::EMS_Engine_Data::EMS_RPM_Data = 1000;
+  }
   
-  output(engMsg);
+  $Powertrain::EMS_Engine_Data::EMS_Tq_Data = (175*5949)/rpm;
 
-  write("EMS => speed=%.1f km/h, gear=%d, rpm=%.1f", @sysvar::EMS_Var::speed_chk, currGear, @sysvar::EMS_Var::EngineRPM);
+  //write("EMS => speed=%.1f km/h, gear=%d, rpm=%.1f", @sysvar::EMS_Var::speed_chk, currGear, @sysvar::EMS_Var::EngineRPM);
+}
+
+
+on message Powertrain::TCU_Gear_Data {
+  currGear = this.TCU_GearType;
+}
+
+on message GW_SSC_CmdSta
+{
+  if(this.SCC_LanrCmd.phys == 1) LaneFlag = 1;
+  if(this.SCC_StopStaSig.phys == 1) StopFlag = 1;
+  if(this.SCC_WaitSta.phys == 1) WaitFlag = 1;
+}
+
+
+on message GW_BCM_WheelSpd_FL //50ms EMS로 Tx해줄 예정
+{
+  WheelSpd = this.WheelSpd_FL.phys; 
+}
+
+on timer StopDcreaseTimer
+{
+       
+  if(StopFlag == 1)
+  {
+        steps = (int)(duration / interval);
+        speedDecrement = WheelSpd / steps;
+  }
+
+    if (WheelSpd > finalSpeed)
+  {
+        WheelSpd -= speedDecrement;
+        if (WheelSpd < finalSpeed) {
+            WheelSpd = finalSpeed;
+        }
+    } 
+    else
+    {
+      cancelTimer(StopDcreaseTimer);
+    }
+}
+  
+
+on timer Stop_1sCnt
+{
+  if(StopFlag == 1)
+    { 
+      if(count1s < 10)
+      {  
+        count1s++;
+        setTimer(Stop_1sCnt, 100);
+      }
+      else
+      {
+       cancelTimer(Stop_1sCnt);
+      }
+  }
 }
