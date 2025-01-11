@@ -1,0 +1,285 @@
+﻿/*@!Encoding:65001*/
+includes
+{
+  
+}
+
+variables
+{
+  UdpSocket gSocket;
+  char gRxBuf[32];
+  char gTxBuf[2];
+  struct myMapData
+  {
+    byte destDomain;
+    char ethID;
+  };
+  
+  struct myMapData CGWTxMap[long];     // 0
+  struct myMapData PCanToCGWMap[long]; // 1
+  struct myMapData CCanToCGWMap[long]; // 2
+  struct myMapData BCanToCGWMap[long]; // 3
+  struct myMapData VEthToCGWMap[long]; // 4
+  struct myMapData TEthToCGWMap[long]; // 5
+}
+
+on start
+{
+  write("CGW Start");
+  MakeMap();
+  gSocket = UdpSocket::Open(ip_Endpoint(192.168.1.25:8012));
+  gSocket.ReceiveFrom(gRxBuf, elcount(gRxBuf));
+  write("Open UDP Socket");
+}
+
+on preStop
+{
+  gSocket.Close();
+}
+
+void AssignMap(byte source, long thisID, byte ethIDVal, byte destDomainVal)
+{
+  switch(source)
+  {
+    case 0:
+      CGWTxMap[thisID].ethID = (char)ethIDVal;
+      CGWTxMap[thisID].destDomain = destDomainVal;
+      break;
+    case 1:
+      PCanToCGWMap[thisID].ethID = (char)ethIDVal;
+      PCanToCGWMap[thisID].destDomain = destDomainVal;
+      break;
+    case 2:
+      CCanToCGWMap[thisID].ethID = (char)ethIDVal;
+      CCanToCGWMap[thisID].destDomain = destDomainVal;
+      break;
+    case 3:
+      BCanToCGWMap[thisID].ethID = (char)ethIDVal;
+      BCanToCGWMap[thisID].destDomain = destDomainVal;
+      break;
+    case 4:
+      VEthToCGWMap[thisID].ethID = (char)ethIDVal;
+      VEthToCGWMap[thisID].destDomain = destDomainVal;
+      break;
+    case 5:
+      TEthToCGWMap[thisID].ethID = (char)ethIDVal;
+      TEthToCGWMap[thisID].destDomain = destDomainVal;
+      break;
+  }
+}
+
+byte MakeDestDomainCode(byte PCan, byte CCan, byte BCan, byte VCU, byte TMU)
+{
+  byte DestDomain = 0;
+  DestDomain = PCan;
+  DestDomain = (CCan << 1) | DestDomain;
+  DestDomain = (BCan << 2) | DestDomain;
+  DestDomain = (VCU << 3) | DestDomain;
+  DestDomain = (TMU << 4) | DestDomain;
+  return DestDomain;
+}
+
+void MakeMap()
+{
+  //void AssignMap(byte source, long thisID, int ethID, byte destDomain)
+  //byte MakeDestDomainCode(p-can, c, b, vcu, tmu)
+  
+  //Test Message
+  AssignMap(1, 0x100, 4, MakeDestDomainCode(0,0,0,1,0)); //P -> V
+  AssignMap(1, 0x101, 3, MakeDestDomainCode(0,0,0,0,1)); //P -> T
+  AssignMap(2, 0x102, 5, MakeDestDomainCode(1,0,0,0,0)); //C -> P
+  AssignMap(1, 0x103, 0, MakeDestDomainCode(0,1,1,0,0)); //P -> CB
+  
+  //CGW Sleep/Wake Signal
+  AssignMap(0, 0x053, 0, MakeDestDomainCode(1,0,0,0,0));
+  AssignMap(0, 0x054, 0, MakeDestDomainCode(1,0,0,0,0));
+  AssignMap(0, 0x055, 0, MakeDestDomainCode(1,0,0,0,0));
+  AssignMap(0, 0x056, 0, MakeDestDomainCode(0,1,0,0,0));
+  AssignMap(0, 0x057, 0, MakeDestDomainCode(0,1,0,0,0));
+  AssignMap(0, 0x058, 0, MakeDestDomainCode(0,1,0,0,0));
+  AssignMap(0, 0x059, 0, MakeDestDomainCode(0,1,0,0,0));
+  AssignMap(0, 0x050, 0, MakeDestDomainCode(0,0,1,0,0));
+  AssignMap(0, 0x051, 0, MakeDestDomainCode(0,0,1,0,0));
+  AssignMap(0, 0x052, 0, MakeDestDomainCode(0,0,1,0,0));
+  
+  //P-CAN
+  AssignMap(1, 0x400, 4, MakeDestDomainCode(0,1,1,1,0)); //#### sig2 기어 데이터 PD12345
+  AssignMap(1, 0x410, 0, MakeDestDomainCode(0,1,1,0,0));
+  AssignMap(1, 0x411, 0, MakeDestDomainCode(0,1,0,0,0));
+  AssignMap(1, 0x420, 0, MakeDestDomainCode(0,1,1,0,0));
+  
+  //C-CAN
+  //AssignMap(2, 0x200, 0, MakeDestDomainCode(0,0,0,0,0));
+  AssignMap(2, 0x201, 0, MakeDestDomainCode(0,0,0,1,0)); //핸들 토크
+  //AssignMap(2, 0x210, 0, MakeDestDomainCode(0,0,0,0,0));
+  //AssignMap(2, 0x211, 0, MakeDestDomainCode(0,0,0,0,0));
+  AssignMap(2, 0x220, 0, MakeDestDomainCode(1,0,1,0,0));
+  AssignMap(2, 0x221, 0, MakeDestDomainCode(1,0,1,0,0));
+  AssignMap(2, 0x222, 0, MakeDestDomainCode(1,0,1,1,0)); //sig1 scc 동작 상태
+  AssignMap(2, 0x230, 0, MakeDestDomainCode(0,0,1,1,0)); //fca 상태
+  AssignMap(2, 0x231, 0, MakeDestDomainCode(0,0,1,1,0)); //sig2 bcw 상태
+  
+  //B-CAN
+  AssignMap(3, 0x300, 8, MakeDestDomainCode(0,0,0,1,0)); //####EDSS sig1 운전자 sig2 동승자
+  AssignMap(3, 0x301, 13, MakeDestDomainCode(0,0,0,1,0)); //####5초 카운트
+  AssignMap(3, 0x310, 0, MakeDestDomainCode(0,0,0,1,0)); //WHL SPD FL
+  AssignMap(3, 0x311, 0, MakeDestDomainCode(0,0,0,1,0)); //WHL SPD FR
+  AssignMap(3, 0x312, 0, MakeDestDomainCode(0,0,0,1,0)); //WHL SPD RL
+  AssignMap(3, 0x313, 0, MakeDestDomainCode(0,0,0,1,0)); //WHL SPD RR
+  AssignMap(3, 0x320, 9, MakeDestDomainCode(0,0,0,1,0)); //####DMS State
+  AssignMap(3, 0x330, 0, MakeDestDomainCode(0,0,0,1,0)); //긴급 정지 취소 물리
+  AssignMap(3, 0x331, 0, MakeDestDomainCode(0,0,0,1,0)); //긴급 정지 취소 ivi
+  AssignMap(3, 0x340, 0, MakeDestDomainCode(0,0,0,1,0)); //시트위치
+  AssignMap(3, 0x350, 0, MakeDestDomainCode(0,0,0,1,0)); //에어백
+  AssignMap(3, 0x351, 0, MakeDestDomainCode(0,0,0,1,0)); //에어백 위치
+  AssignMap(3, 0x360, 0, MakeDestDomainCode(0,0,0,1,0)); //핸들 파지
+  AssignMap(3, 0x361, 0, MakeDestDomainCode(0,0,0,1,0)); //핸들 위치
+  
+  //VCU
+  AssignMap(4, 0x1, 1, MakeDestDomainCode(0,0,1,0,0)); 
+  AssignMap(4, 0x2, 2, MakeDestDomainCode(0,0,1,0,0)); // edss ecall 작동여부
+  //AssignMap(4, 0x4, 4, MakeDestDomainCode(0,0,0,0,0)); // P단
+  AssignMap(4, 0x5, 5, MakeDestDomainCode(0,2,0,0,0)); // 안전정차 req
+  //AssignMap(4, 0x8, 8, MakeDestDomainCode(0,0,0,0,0)); // EDSS 버튼 수신
+  //AssignMap(4, 0x9, 9, MakeDestDomainCode(0,0,0,0,0)); // DMS 수신
+  AssignMap(4, 0x12, 12, MakeDestDomainCode(0,0,0,0,1));
+  //AssignMap(4, 0x13, 13, MakeDestDomainCode(0,0,0,0,0)); //5초
+
+  //TMU
+  AssignMap(5, 0x0, 0, MakeDestDomainCode(0,0,0,0,0));
+  AssignMap(5, 0x1, 1, MakeDestDomainCode(0,0,0,0,0));
+  AssignMap(5, 0x2, 2, MakeDestDomainCode(0,0,0,0,0));
+}
+
+byte MakeEthData(message *RcvMsg)
+{
+  //p400 sig2 기어 데이터 pd12345
+  //b300 edss sig1 운전자 sig2 동승자
+  //b301 5초 카운트
+  //b320 dms state
+  if(RcvMsg.id == 0x400)
+  {
+    if(RcvMsg.byte(0) == 0 || RcvMsg.byte(0) == 1)
+    {
+      return 1;
+    }
+    return 0;
+  }
+  return RcvMsg.byte(0);
+}
+
+void ForwardingMsg(message *RcvMsg, byte destDomainVal)//, message *ForwardMsg)
+{
+  if((destDomainVal >> 0) & 1 == 1) //Fowarding To P-Can
+  {
+    RcvMsg.can = 1;
+    //write("P %d", RcvMsg.id);
+    output (RcvMsg);
+  }
+  if((destDomainVal >> 1) & 1 == 1) //Fowarding To C-Can
+  {
+    RcvMsg.can = 2;
+    //write("C %d", RcvMsg. id);
+    output (RcvMsg);
+  }
+  if((destDomainVal >> 2) & 1 == 1) //Fowarding To B-Can
+  {
+    RcvMsg.can = 3;
+    //write("B %d", RcvMsg.id);
+    output (RcvMsg);
+  }
+  if((destDomainVal >> 3) & 1 == 1) //Fowarding To Eth Domain VCU
+  {
+    gTxBuf[0] = PCanToCGWMap[RcvMsg.id].ethID;
+    gTxBuf[1] = MakeEthData(RcvMsg);
+    write("V %d %d",(byte)gTxBuf[0] ,(byte)gTxBuf[1]);
+    gSocket.SendTo(Ip_Endpoint(192.168.1.34:8010), gTxBuf, (dword)2);
+    gSocket.ReceiveFrom(gRxBuf, elcount(gRxBuf));
+  }
+  if((destDomainVal >> 4) & 1 == 1) //Fowarding To Eth Domain TMU
+  {
+    gTxBuf[0] = PCanToCGWMap[RcvMsg.id].ethID;
+    gTxBuf[1] = RcvMsg.byte(0);
+    write("T %d %d",(byte)gTxBuf[0] ,(byte)gTxBuf[1]);
+    gSocket.SendTo(Ip_Endpoint(192.168.1.33:8008), gTxBuf, (dword)2);
+    gSocket.ReceiveFrom(gRxBuf, elcount(gRxBuf));
+  }
+}
+
+on message P_CANv.*
+{
+  if(this.dir == Rx)
+  {
+    if (PCanToCGWMap.containsKey(this.id)){
+    ForwardingMsg(this, PCanToCGWMap[this.id].destDomain);
+    }
+  }
+}
+
+on message C_CANv.*
+{
+  if(this.dir == Rx)
+  {
+    if (CCanToCGWMap.containsKey(this.id)){
+    ForwardingMsg(this, CCanToCGWMap[this.id].destDomain);
+    }
+  }
+}
+
+on message B_CAN5.*
+{
+  if(this.dir == Rx)
+  {
+    if (BCanToCGWMap.containsKey(this.id)){
+    ForwardingMsg(this, BCanToCGWMap[this.id].destDomain);
+    }
+  }
+}
+
+
+////////////////////////////////////////////////////////test////////////////////////////////////////////////////
+//on key 'v'
+//{
+//  gTxBuf[0] = 4;
+//  gTxBuf[1] = 1;
+//  gSocket.SendTo(Ip_Endpoint(192.168.1.34:8010), gTxBuf, strlen(gTxBuf));
+//  gSocket.ReceiveFrom(gRxBuf, elcount(gRxBuf));
+//}
+
+//on key 't'
+//{
+//  gTxBuf[0] = 4;
+//  gTxBuf[1] = 1;
+//  gSocket.SendTo(Ip_Endpoint(192.168.1.33:8008), gTxBuf, strlen(gTxBuf));
+//  gTxBuf[0] = 5;
+//  gTxBuf[1] = 15;
+//  gSocket.SendTo(Ip_Endpoint(192.168.1.33:8008), gTxBuf, strlen(gTxBuf));
+//  gSocket.ReceiveFrom(gRxBuf, elcount(gRxBuf));
+//}
+
+//on key '1'
+//{
+//  message P_CANv.0x101 myMsg1;
+//  myMsg1.dlc = 2;
+//  myMsg1.byte(0) = 1;
+//  myMsg1.byte(1) = 1;
+//  output (myMsg1);
+//}
+
+//on key '2'
+//{
+//  message C_CANv.0x102 myMsg1;
+//  myMsg1.dlc = 2;
+//  myMsg1.byte(0) = 0xCB;
+//  myMsg1.byte(1) = 22;
+//  output (myMsg1);
+//}
+
+//on key '3'
+//{
+//  message P_CANv.0x103 myMsg1;
+//  myMsg1.dlc = 2;
+//  myMsg1.byte(0) = 0xCB;
+//  myMsg1.byte(1) = 55;
+//  output (myMsg1);
+//}

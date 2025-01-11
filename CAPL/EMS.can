@@ -1,0 +1,55 @@
+﻿/*@!Encoding:65001*/
+includes
+{
+  
+}
+
+variables {
+  float gearratio[6] = {0, 4.639, 2.826, 1.841, 1.386, 1.000};
+  int currGear = 1;
+  
+  float finalDriverRatio = 3.909;
+  
+  float speedMps = 0.0;
+  int gearIndex = 1;
+  
+  message Powertrain::EMS_Engine_Data engMsg;
+}
+
+on start {
+  @sysvar::EMS_Var::speed_chk = 4;
+  @sysvar::EMS_Var::EngineRPM = 1100;
+  $Powertrain::EMS_Engine_Data::EMS_RPM_Data = 1100;
+  currGear = 1;
+}
+
+on key 'q' {
+  if(@sysvar::EMS_Var::speed_chk < 255)
+  @sysvar::EMS_Var::speed_chk += 5;
+}
+
+on key 'w' {
+  if(@sysvar::EMS_Var::speed_chk > 5) {
+    @sysvar::EMS_Var::speed_chk -= 5;
+  }
+}
+
+on message Powertrain::TCU_Gear_Data {
+  currGear = this.TCU_GearType;
+}
+
+on sysvar_update sysvar::EMS_Var::speed_chk {
+  gearIndex = currGear;  // gear=1 => index=0
+  
+  // gearIndex 안전 범위
+  if(gearIndex < 1) gearIndex=1;
+  if(gearIndex > 5) gearIndex=5;
+
+  // rpm 계산
+  @sysvar::EMS_Var::EngineRPM = (@sysvar::EMS_Var::speed_chk*gearratio[gearIndex]*finalDriverRatio*1000000)/(3.78*240*50+4800*18);
+  $Powertrain::EMS_Engine_Data::EMS_RPM_Data = @sysvar::EMS_Var::EngineRPM;
+  
+  output(engMsg);
+
+  write("EMS => speed=%.1f km/h, gear=%d, rpm=%.1f", @sysvar::EMS_Var::speed_chk, currGear, @sysvar::EMS_Var::EngineRPM);
+}
