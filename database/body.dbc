@@ -36,6 +36,12 @@ BS_:
 BU_: Gateway IVI DMS BCM
 
 
+BO_ 1010 BCM_Side_Road_State: 1 BCM
+ SG_ Side_Road_State : 0|1@1+ (1,0) [0|1] ""  Gateway
+
+BO_ 1009 BCM_Rear_Vehicle_State: 1 BCM
+ SG_ Rear_Vehicle_state : 0|1@1+ (1,0) [0|1] ""  Gateway
+
 BO_ 769 BCM_5s: 1 BCM
  SG_ Count_5s : 0|1@1+ (1,0) [0|1] ""  Gateway
 
@@ -172,8 +178,8 @@ BO_ 786 BCM_Wheel_Speed_RL: 1 BCM
 BO_ 785 BCM_Wheel_Speed_FR: 1 BCM
  SG_ Wheel_Speed_FR : 0|8@1+ (1,0) [0|255] "km"  Gateway
 
-BO_ 784 BCM_Wheel_Speed: 1 BCM
- SG_ Wheel_Speed_FL : 0|8@1+ (1,0) [0|255] "km"  Gateway
+BO_ 784 BCM_Wheel_Speed_FL: 1 BCM
+ SG_ Wheel_Speed_FL : 0|8@1+ (1,0) [0|255] "km/h"  Gateway
 
 BO_ 768 BCM_EDSS_SW_STATE: 1 BCM
  SG_ EDSS_Passenger_On_Off : 1|1@1+ (1,0) [0|1] ""  Gateway

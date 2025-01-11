@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Panel Type="Vector.CANalyzer.Panels.PanelSerializer, Vector.CANalyzer.Panels.Serializer, Version=18.0.150.0, Culture=neutral, PublicKeyToken=null">
+  <Object Type="Vector.CANalyzer.Panels.Runtime.Panel, Vector.CANalyzer.Panels.Common, Version=18.0.150.0, Culture=neutral, PublicKeyToken=null" Name="Panel" ControlName="BCM">
+    <Object Type="Vector.CANalyzer.Panels.Design.LCDControl, Vector.CANalyzer.Panels.CommonControls, Version=18.0.150.0, Culture=neutral, PublicKeyToken=null" Name="X59bc4ca4e5d59e46fde9ff1e5539cb78c09d" ControlName="LCD Control 1">
+      <Property Name="Name">X59bc4ca4e5d59e46fde9ff1e5539cb78c09d</Property>
+      <Property Name="Size">164, 50</Property>
+      <Property Name="Location">137, 85</Property>
+      <Property Name="SymbolConfiguration">8;2;body;BCM;BCM_Wheel_Speed_FL;Wheel_Speed_FL;1;CAN;;-1;;;Value;;;0</Property>
+    </Object>
+    <Property Name="Name">Panel</Property>
+    <Property Name="Size">899, 491</Property>
+    <Property Name="Location">0, 0</Property>
+    <Property Name="BackColor">255, 255, 255, 255</Property>
+    <Property Name="IsProportional">True</Property>
+  </Object>
+</Panel>
