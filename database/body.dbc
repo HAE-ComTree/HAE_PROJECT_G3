@@ -36,6 +36,10 @@ BS_:
 BU_: Gateway IVI DMS BCM
 
 
+BO_ 996 VCU_IVI_Msg: 1 Gateway
+ SG_ ECall_Req : 1|1@1+ (1,0) [0|1] ""  IVI
+ SG_ EDSS_Act : 0|1@1+ (1,0) [0|1] ""  IVI
+
 BO_ 1010 BCM_Side_Road_State: 1 BCM
  SG_ Side_Road_State : 0|1@1+ (1,0) [0|1] ""  Gateway
 

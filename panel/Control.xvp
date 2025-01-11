@@ -5,8 +5,8 @@
       <Object Type="Vector.CANalyzer.Panels.Design.SwitchControl, Vector.CANalyzer.Panels.CommonControls, Version=18.0.150.0, Culture=neutral, PublicKeyToken=null" Name="Xf13996dbe34e2e4dedeb087e0db465aff87a" ControlName="Switch / Indicator 6">
         <Property Name="Name">Xf13996dbe34e2e4dedeb087e0db465aff87a</Property>
         <Property Name="Size">47, 61</Property>
-        <Property Name="Location">12, 28</Property>
-        <Property Name="SymbolConfiguration">8;16;BCM;;;sv_AirBag_state;1;;;-1;;;Value;;;0</Property>
+        <Property Name="Location">13, 32</Property>
+        <Property Name="SymbolConfiguration">8;16;BCM;;;sv_Side_Road_State;1;;;-1;;;Value;;;0</Property>
         <Property Name="TabIndex">1</Property>
         <Property Name="Activation">Left</Property>
         <Property Name="Epsilon">0</Property>
@@ -21,7 +21,7 @@
       <Property Name="Size">78, 100</Property>
       <Property Name="Location">277, 157</Property>
       <Property Name="Font">Microsoft Sans Serif, 9pt, style=Bold</Property>
-      <Property Name="Text">에어백 동작 여부</Property>
+      <Property Name="Text">갓길 상태 여부</Property>
       <Property Name="TabIndex">7</Property>
       <Property Name="UseWindowsStyle">False</Property>
     </Object>
@@ -29,8 +29,8 @@
       <Object Type="Vector.CANalyzer.Panels.Design.SwitchControl, Vector.CANalyzer.Panels.CommonControls, Version=18.0.150.0, Culture=neutral, PublicKeyToken=null" Name="Xbc3845d3e5432e4365e94c3e2b2ceab66d87" ControlName="Switch / Indicator 5">
         <Property Name="Name">Xbc3845d3e5432e4365e94c3e2b2ceab66d87</Property>
         <Property Name="Size">47, 61</Property>
-        <Property Name="Location">8, 26</Property>
-        <Property Name="SymbolConfiguration">8;16;BCM;;;sv_Collision;1;;;-1;;;Value;;;0</Property>
+        <Property Name="Location">14, 31</Property>
+        <Property Name="SymbolConfiguration">8;16;BCM;;;sv_Rear_Vehicle_state;1;;;-1;;;Value;;;0</Property>
         <Property Name="TabIndex">1</Property>
         <Property Name="Activation">Left</Property>
         <Property Name="Epsilon">0</Property>
@@ -42,10 +42,10 @@
         <Property Name="SwitchValuesRx">1;2;0;1</Property>
       </Object>
       <Property Name="Name">X58a0378ceb54ce4355eb4ffea8f31e0e31fd</Property>
-      <Property Name="Size">69, 100</Property>
+      <Property Name="Size">83, 100</Property>
       <Property Name="Location">188, 159</Property>
       <Property Name="Font">Microsoft Sans Serif, 9pt, style=Bold</Property>
-      <Property Name="Text">충돌 발생</Property>
+      <Property Name="Text">측후방 차량 여부</Property>
       <Property Name="TabIndex">6</Property>
       <Property Name="UseWindowsStyle">False</Property>
     </Object>
@@ -127,7 +127,7 @@
         <Property Name="Size">17, 22</Property>
         <Property Name="Location">72, 141</Property>
         <Property Name="SymbolConfiguration">8;16;BCM;;;sv_Seat_RR;1;;;-1;;;Value;;;0</Property>
-        <Property Name="ImageFile">..\image\seat_position.png</Property>
+        <Property Name="ImageFile">..\image\seat_position.jpg.png</Property>
         <Property Name="TabIndex">4</Property>
         <Property Name="Activation">Left</Property>
         <Property Name="Epsilon">0</Property>
@@ -143,7 +143,7 @@
         <Property Name="Size">17, 22</Property>
         <Property Name="Location">48, 141</Property>
         <Property Name="SymbolConfiguration">8;16;BCM;;;sv_Seat_RL;1;;;-1;;;Value;;;0</Property>
-        <Property Name="ImageFile">..\image\seat_position.png</Property>
+        <Property Name="ImageFile">..\image\seat_position.jpg.png</Property>
         <Property Name="TabIndex">3</Property>
         <Property Name="Activation">Left</Property>
         <Property Name="Epsilon">0</Property>
@@ -159,7 +159,7 @@
         <Property Name="Size">17, 22</Property>
         <Property Name="Location">72, 113</Property>
         <Property Name="SymbolConfiguration">8;16;BCM;;;sv_Seat_FR;1;;;-1;;;Value;;;0</Property>
-        <Property Name="ImageFile">..\image\seat_position.png</Property>
+        <Property Name="ImageFile">..\image\seat_position.jpg.png</Property>
         <Property Name="TabIndex">2</Property>
         <Property Name="Activation">Left</Property>
         <Property Name="Epsilon">0</Property>
@@ -175,7 +175,7 @@
         <Property Name="Size">18, 22</Property>
         <Property Name="Location">48, 113</Property>
         <Property Name="SymbolConfiguration">8;16;BCM;;;sv_Seat_FL;1;;;-1;;;Value;;;0</Property>
-        <Property Name="ImageFile">..\image\seat_position.png</Property>
+        <Property Name="ImageFile">..\image\seat_position.jpg.png</Property>
         <Property Name="TabIndex">1</Property>
         <Property Name="Activation">Left</Property>
         <Property Name="Epsilon">0</Property>

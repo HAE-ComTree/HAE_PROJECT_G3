@@ -77,6 +77,10 @@ void checkWakeupCondition()
 on start
 { 
     @sysvar::DMS::sv_DMS_CautionLv = 0;
+    @sysvar::DMS::sv_warning_message = 0;
+    @sysvar::DMS::sv_warning_sound = 0;
+    @sysvar::DMS::sv_warning_steering = 0;
+    @sysvar::DMS::sv_warning_belt = 0;
   
     b_DMS_NM_Flag.NmSleepFlag_DMS.phys = 0;
   
@@ -89,4 +93,29 @@ on sysvar sysvar::DMS::sv_DMS_CautionLv
 {
     Driver_State = @this;
     b_DMS_Driver_State.DMS_CautionLv.phys = Driver_State;
+  
+    
+}
+
+on message DMS_Driver_State {
+
+    if (@sysvar::DMS::sv_DMS_CautionLv == 2) {
+        @sysvar::DMS::sv_warning_message = 1; //경고 메세지
+        @sysvar::DMS::sv_warning_sound = 0;// 오디오 경보
+        @sysvar::DMS::sv_warning_steering = 0;// 핸들 진동
+        @sysvar::DMS::sv_warning_belt = 0;// 벨트 조임
+    } 
+    else if (@sysvar::DMS::sv_DMS_CautionLv == 3) {
+        @sysvar::DMS::sv_warning_message = 2; //경고 메세지
+        @sysvar::DMS::sv_warning_sound = 1;// 오디오 경보
+        @sysvar::DMS::sv_warning_steering = 1;// 핸들 진동
+        @sysvar::DMS::sv_warning_belt = 1;// 벨트 조임
+      
+    } 
+    else {
+        @sysvar::DMS::sv_warning_message = 0; //경고 메세지
+        @sysvar::DMS::sv_warning_sound = 0; // 오디오 경보
+        @sysvar::DMS::sv_warning_steering = 0;// 핸들 진동
+        @sysvar::DMS::sv_warning_belt = 0;// 벨트 조임
+    }
 }

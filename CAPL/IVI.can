@@ -91,3 +91,20 @@ on sysvar sysvar::IVI::sv_IVI_EDSS_CANCEL_SW
     EDSS_CSW = @this;
     b_IVI_EDSS_CSW.IVI_EDSS_CANCEL_SW.phys = EDSS_CSW; 
 }
+
+on message VCU_IVI_Msg {
+  
+  if (this.EDSS_Act.phys == 1 && this.ECall_Req.phys == 0) {
+    @sysvar::IVI::sv_stop_message = 0;
+    setControlVisibility("stop_situation","stop_message",1); 
+  } 
+  
+  else if (this.EDSS_Act.phys == 1 && this.ECall_Req.phys == 1) {
+    @sysvar::IVI::sv_stop_message = 1;
+    setControlVisibility("stop_situation","stop_message",1); 
+  } 
+  
+  else {
+    setControlVisibility("stop_situation","stop_message",0); 
+  }
+}

@@ -7,9 +7,14 @@ includes
 /*@!Encoding:949*/
 
 variables
-{   
+{   //연습용 
+    message VCU_IVI_Msg           b_VCU_IVI_Msg; int a; int b;
+    int flag;
+  
+  
     // TX 메시지
     message BCM_NM_Flag           b_BCM_NM_Flag;
+    message BCM_5s                b_BCM_5s;
     message BCM_EDSS_SW_STATE     b_BCM_EDSS_SW_STATE;  int SW_STATE1; int SW_STATE2;
     message BCM_Wheel_Speed_FL    b_BCM_Wheel_Speed_FL; int Speed_FL;
     message BCM_Wheel_Speed_FR    b_BCM_Wheel_Speed_FR; int Speed_FR;
@@ -21,29 +26,49 @@ variables
     message BCM_AirBag_Pos        b_BCM_AirBag_Pos;     int AirBag_Pos;
     message BCM_Steering_Holding  b_BCM_Steering_Holding;int Steering_Holding; 
     message BCM_Steering_Pos      b_BCM_Steering_Pos;    int Steering_Pos;
+    
+    message BCM_Rear_Vehicle_State b_BCM_Rear_Vehicle_State; int Rear_Vehicle_State;
+    message BCM_Side_Road_State   b_BCM_Side_Road_State; int Side_Road_State;
+    msTimer moving;
   
-    int NM_flag;
-    int IGN1_flag;
-    //int SysIGN1sta;
-    int Wakeup;
+    int NM_flag = 0;
+    int IGN1_flag = 0;
+    int Wakeup = 0;
   
     msTimer BCMMessageTimer;      // 송신용 타이머
   
-    msTimer wheelspdIncrease;     // 초기 속도를 위한 타이머
+    // 차속을 위한 타이머
+    msTimer wheelspdIncrease;     
     int currentValue;
     int step;
     int wheelSpd;
+  
+    //5초 카운트
+    int BCM_cnt5s;
+    msTimer EDSS_5sCnt;
+    int EDSS_cnt;
+    int count5s;
 }
 
 on timer BCMMessageTimer
 { 
+  //연습용
+  output(b_VCU_IVI_Msg);
+  
+  
+  
+  
   output(b_BCM_NM_Flag);
   output(b_BCM_EDSS_SW_STATE);
-
+  
+  //차속
   b_BCM_Wheel_Speed_FL.Wheel_Speed_FL.phys = currentValue;
   output(b_BCM_Wheel_Speed_FL);
   
-  
+  //5초 카운트
+  b_BCM_5s.Count_5s.phys = BCM_cnt5s;
+  output(b_BCM_5s); 
+
   output(b_BCM_Wheel_Speed_FR);
   output(b_BCM_Wheel_Speed_RL);
   output(b_BCM_Wheel_Speed_RR);
@@ -53,6 +78,9 @@ on timer BCMMessageTimer
   output(b_BCM_AirBag_Pos);
   output(b_BCM_Steering_Holding);
   output(b_BCM_Steering_Pos);
+  
+  output(b_BCM_Rear_Vehicle_State);
+  output(b_BCM_Side_Road_State);
 }
 
 on timer wheelspdIncrease
@@ -79,6 +107,24 @@ on timer wheelspdIncrease
     cancelTimer(wheelspdIncrease);
   }
 }
+
+on timer EDSS_5sCnt
+{
+  if(count5s < 5) {  
+    count5s++;
+    BCM_cnt5s = 0;
+    @sysvar::BCM::sv_Count_5s = count5s;
+    setTimer(EDSS_5sCnt, 1000);
+  }
+  else
+  { 
+    BCM_cnt5s = 1;
+    count5s = 0;
+    setControlVisibility("Cluster","count_5s", 0);
+    setControlVisibility("Cluster","count_5s_message",0); 
+  }
+}
+
 
 void wheelSpdInit()
 {
@@ -144,6 +190,14 @@ void checkWakeupCondition()
 /* 초기화 */
 on start
 {   
+    //연습용
+    @sysvar::BCM::pra_edss_act = 0;
+    @sysvar::BCM::pra_ecall_req = 0;
+    b_VCU_IVI_Msg.EDSS_Act.phys = 0; a=0;
+    b_VCU_IVI_Msg.ECall_Req.phys = 0; b=0;
+  
+  
+  
     @sysvar::IGN::sv_IGN=0;
     @sysvar::BCM::sv_EDSS_Driver_On_Off = 0;
     @sysvar::BCM::sv_EDSS_Passenger_On_Off = 0;
@@ -160,9 +214,14 @@ on start
     @sysvar::BCM::sv_AirBag_Pos = 0;
     @sysvar::BCM::sv_Str_Hold = 0;
     @sysvar::BCM::sv_Str_Pos = 0;
-    
+  
+    @sysvar::BCM::sv_Rear_Vehicle_state = 0;
+    @sysvar::BCM::sv_Side_Road_State = 0;
+  
     b_BCM_NM_Flag.NmSleepFlag_BCM.phys = 0;
   
+    b_BCM_5s.Count_5s.phys = 0; EDSS_cnt = 0; count5s = 0; BCM_cnt5s = 0; //setTimer(EDSS_5sCnt,1000);
+// 5초 카운트 초기화
     b_BCM_EDSS_SW_STATE.EDSS_Driver_On_Off.phys = 0; SW_STATE1 = 0;
     b_BCM_EDSS_SW_STATE.EDSS_Passenger_On_Off.phys = 0; SW_STATE2 = 0; 
     b_BCM_Wheel_Speed_FL.Wheel_Speed_FL.phys = 0; Speed_FL = 0; 
@@ -176,7 +235,11 @@ on start
     b_BCM_Steering_Holding.Str_Hold.phys = 0; Steering_Holding = 0; 
     b_BCM_Steering_Pos.Str_Pos.phys = 0; Steering_Pos = 0; 
   
+    b_BCM_Rear_Vehicle_State.Rear_Vehicle_state.phys = 0; Rear_Vehicle_State = 0;
+    b_BCM_Side_Road_State.Side_Road_State.phys = 0; Side_Road_State = 0;
+  
     setTimerCyclic(BCMMessageTimer, 0, 100); // 100ms 주기로 송신
+    setTimerCyclic(moving, 0, 150); flag=0;
   
     wheelSpdInit();
   
@@ -200,6 +263,20 @@ on sysvar sysvar::BCM::sv_EDSS_Driver_On_Off {
 on sysvar sysvar::BCM::sv_EDSS_Passenger_On_Off {
     SW_STATE2 = @this;
     b_BCM_EDSS_SW_STATE.EDSS_Passenger_On_Off.phys = SW_STATE2; 
+  
+    setControlVisibility("Cluster","count_5s",1); //패널명, control name명, 1이면 보이는거/0이면 안보이게 하는거
+    setControlVisibility("Cluster","count_5s_message",1); 
+  
+    if (@this == 1) { // 값이 1일 때 타이머 시작
+        count5s = 0;
+        BCM_cnt5s = 0;
+        setTimer(EDSS_5sCnt, 1000);
+    } else { // 값이 0일 때 타이머 종료
+        cancelTimer(EDSS_5sCnt);
+        count5s = 0;
+        BCM_cnt5s = 0;
+        @sysvar::BCM::sv_Count_5s = 0;
+    }
 }
 
 on sysvar sysvar::BCM::sv_Wheel_Speed_FL {
@@ -265,4 +342,58 @@ on sysvar sysvar::BCM::sv_Str_Hold {
 on sysvar sysvar::BCM::sv_Str_Pos {
     Steering_Pos = @this;
     b_BCM_Steering_Pos.Str_Pos.phys = Steering_Pos; 
+}
+
+on sysvar sysvar::BCM::sv_Rear_Vehicle_state {
+    Rear_Vehicle_State = @this;
+    b_BCM_Rear_Vehicle_State.Rear_Vehicle_state.phys = Rear_Vehicle_State; 
+    //여기에 첫화면 등록할까..
+}
+
+on sysvar sysvar::BCM::sv_Side_Road_State {
+    Side_Road_State = @this;
+    b_BCM_Side_Road_State.Side_Road_State.phys = Side_Road_State; 
+}
+
+on timer moving
+{ // 1. 측후방 ON, 갓길 OFF -> 차선 유지
+  if(Rear_Vehicle_State == 1 && Side_Road_State==0) {
+    if (@sysvar::BCM::moving_car<7) {
+      @sysvar::BCM::moving_car++;
+      flag = 1;
+    } 
+  } 
+  
+  // 2. 측후방 OFF, 갓길 OFF ->차선 이동
+  else if ((0<flag) && (flag<17) && Rear_Vehicle_State == 0 && Side_Road_State==0) {
+    if (@sysvar::BCM::moving_car<12) {
+        @sysvar::BCM::moving_car++;
+    }
+    flag++;
+  }
+  
+  // 3. 측후방 OFF, 갓길 ON ->차선 이동
+  else if (flag==17 && Rear_Vehicle_State == 0 && Side_Road_State==0) {
+    if (@sysvar::BCM::moving_car<16) {
+        @sysvar::BCM::moving_car++;
+        
+    }
+  }
+  // 4. 측후방 OFF, 갓길 ON ->정차
+  else if (Rear_Vehicle_State == 0 && Side_Road_State==1) {
+    if (@sysvar::BCM::moving_car<19) {
+        @sysvar::BCM::moving_car++;
+    }
+  }
+}
+
+////////연습////////////////
+on sysvar sysvar::BCM::pra_edss_act {
+    a = @this;
+    b_VCU_IVI_Msg.EDSS_Act.phys = a; 
+}
+
+on sysvar sysvar::BCM::pra_ecall_req {
+    b = @this;
+    b_VCU_IVI_Msg.ECall_Req.phys = a; 
 }
