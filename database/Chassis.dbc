@@ -36,9 +36,20 @@ BS_:
 BU_: BCW FCA GateWay SCC MDPS
 
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
+BO_ 305 GW_BCM_Side_Road_State: 1 GateWay
+ SG_ Side_Road_State : 0|1@1+ (1,0) [0|1] "" Vector__XXX
+
+BO_ 304 GW_BCM_Rear_Vehicle_State: 1 GateWay
+ SG_ Rear_Vehicle_state : 0|1@1+ (1,0) [0|1] "" Vector__XXX
+
+BO_ 547 SCC_CmdSta: 1 SCC
+ SG_ SCC_WaitSta : 2|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ SCC_StopStaSig : 1|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ SCC_LaneCmd : 0|1@1+ (1,0) [0|1] "" Vector__XXX
+
+BO_ 1072 GW_BCM_WheelSpd_FL: 1 GateWay
+ SG_ WheelSpd_FL : 0|8@1+ (1,0) [0|255] "" Vector__XXX
+
 BO_ 1536 VCU_Emergency_Act: 1 GateWay
  SG_ Emergency_Act : 0|1@1+ (1,0) [0|1] ""  SCC
 
@@ -47,33 +58,6 @@ BO_ 88 BCW_NM_Flag: 1 BCW
 
 BO_ 87 FCA_NM_Flag: 1 FCA
  SG_ FCA_Flag : 0|1@1+ (1,1) [0|1] ""  GateWay
-=======
-BO_ 50 VCU_Emergency_Act: 1 GateWay
- SG_ Emergency_Act : 0|1@1+ (1,0) [0|0] ""  SCC
-=======
-BO_ 1536 VCU_Emergency_Act: 1 GateWay
- SG_ Emergency_Act : 0|1@1+ (1,0) [0|1] ""  SCC
->>>>>>> KAN-17-BODY-CAN-
-
-=======
-BO_ 1536 VCU_Emergency_Act: 1 GateWay
- SG_ Emergency_Act : 0|1@1+ (1,0) [0|1] ""  SCC
-
->>>>>>> 1aaf5dd (VCU측 시그널 추가)
-BO_ 88 BCW_NM_Flag: 1 BCW
- SG_ BCW_Flag : 0|1@1+ (1,1) [0|1] ""  GateWay
-
-BO_ 87 FCA_NM_Flag: 1 FCA
-<<<<<<< HEAD
-<<<<<<< HEAD
- SG_ FCA_Flag : 0|1@1+ (1,1) [0|1] "" Vector__XXX
->>>>>>> 71770e13145256aa752114d15196a43052a4086a
-=======
- SG_ FCA_Flag : 0|1@1+ (1,1) [0|1] ""  GateWay
->>>>>>> 1aaf5dd (VCU측 시그널 추가)
-=======
- SG_ FCA_Flag : 0|1@1+ (1,1) [0|1] ""  GateWay
->>>>>>> KAN-17-BODY-CAN-
 
 BO_ 73 GW_NM_BCW: 1 GateWay
  SG_ NmSleepCmd_BCW : 0|1@1+ (1,0) [0|1] ""  BCW
@@ -96,15 +80,7 @@ BO_ 71 GW_NM_SCC: 1 GateWay
 BO_ 70 GW_NM_MDPS: 1 GateWay
  SG_ NmSleepCmd_MDPS : 0|1@1+ (1,0) [0|1] ""  MDPS
 
-<<<<<<< HEAD
-<<<<<<< HEAD
 BO_ 50 VCU_IGN1: 1 GateWay
-=======
-BO_ 49 VCU_IGN1: 1 GateWay
->>>>>>> 71770e13145256aa752114d15196a43052a4086a
-=======
-BO_ 50 VCU_IGN1: 1 GateWay
->>>>>>> KAN-17-BODY-CAN-
  SG_ IGN_State : 0|1@1+ (1,0) [0|1] ""  MDPS
 
 BO_ 1041 EPB_Press_Data: 2 GateWay
@@ -117,15 +93,7 @@ BO_ 1040 EPB_State_Data: 1 GateWay
 
 BO_ 1024 TCU_Gear_Data: 1 GateWay
  SG_ TCU_GearState : 0|1@1+ (1,0) [0|1] ""  SCC
-<<<<<<< HEAD
-<<<<<<< HEAD
  SG_ TCU_GearType : 1|4@1+ (1,0) [0|15] ""  SCC,MDPS
-=======
- SG_ TCU_GearType : 1|4@1+ (1,0) [0|15] ""  GateWay,SCC,MDPS
->>>>>>> 71770e13145256aa752114d15196a43052a4086a
-=======
- SG_ TCU_GearType : 1|4@1+ (1,0) [0|15] ""  SCC,MDPS
->>>>>>> KAN-17-BODY-CAN-
 
 BO_ 560 BCW_Data: 1 BCW
  SG_ BCW_LR : 0|2@1+ (1,0) [0|2] ""  SCC,GateWay
@@ -134,13 +102,13 @@ BO_ 560 BCW_Data: 1 BCW
 BO_ 561 FCA_Data: 1 FCA
  SG_ FCAState : 0|2@1+ (1,0) [0|3] ""  SCC,GateWay
 
-BO_ 546 SCC_Speed_Control: 5 SCC
+BO_ 546 SCC_Speed_Control: 3 SCC
  SG_ SCC_VS_target : 16|8@1+ (1,0) [0|254] "km/h"  GateWay
  SG_ SCC_VS : 8|8@1+ (1,0) [0|254] "km/h"  GateWay
  SG_ CF_SCC_Gear_State : 2|4@1+ (1,0) [0|15] ""  GateWay
  SG_ CF_SCC_State : 0|1@1+ (1,0) [0|1] ""  GateWay
  SG_ CF_SCC_BreakACT : 1|1@1+ (1,0) [0|1] ""  GateWay
- SG_ SCC_ACCEL_REF : 24|11@1+ (0.01,-10.23) [-10.23|10.24] "m/s^2"  GateWay
+ SG_ SCC_State_Sig : 6|2@1+ (1,0) [0|4] ""  GateWay
 
 BO_ 545 SCC_E_stop: 1 SCC
  SG_ CF_Estop : 0|1@1+ (1,0) [0|1] ""  GateWay
@@ -152,49 +120,16 @@ BO_ 544 SCC_LineData: 2 SCC
  SG_ SCC_LKAS_ACT : 0|1@1+ (1,0) [0|1] ""  GateWay
 
 BO_ 529 MDPS_Col_Tq: 2 MDPS
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
  SG_ ColTq : 0|11@1+ (1,-1024) [-1024|1024] ""  GateWay
 
 BO_ 528 MDPS_Out_Tq: 2 MDPS
  SG_ OutTq : 0|12@1+ (0.1,-204.8) [-204.8|204.7] ""  GateWay
-=======
- SG_ ColTq : 0|11@1+ (1,-1024) [-1024|1024] "" Vector__XXX
-
-BO_ 528 MDPS_Out_Tq: 2 MDPS
- SG_ OutTq : 0|12@1+ (0.1,-204.8) [-204.8|204.7] "" Vector__XXX
->>>>>>> 71770e13145256aa752114d15196a43052a4086a
-=======
- SG_ ColTq : 0|11@1+ (1,-1024) [-1024|1024] ""  GateWay
-
-BO_ 528 MDPS_Out_Tq: 2 MDPS
- SG_ OutTq : 0|12@1+ (0.1,-204.8) [-204.8|204.7] ""  GateWay
->>>>>>> 1aaf5dd (VCU측 시그널 추가)
-=======
- SG_ ColTq : 0|11@1+ (1,-1024) [-1024|1024] ""  GateWay
-
-BO_ 528 MDPS_Out_Tq: 2 MDPS
- SG_ OutTq : 0|12@1+ (0.1,-204.8) [-204.8|204.7] ""  GateWay
->>>>>>> KAN-17-BODY-CAN-
 
 BO_ 513 MDPS_Steering_Tq: 2 MDPS
  SG_ sig_SteeringTq : 0|12@1+ (0.01,-20.48) [-20.48|20.47] "Nm"  GateWay
 
 BO_ 512 MDPS_Steering_Angle: 2 MDPS
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
  SG_ SteeringAngle : 0|16@1- (0.1,0) [-3276.8|3276.7] "Deg"  GateWay
-=======
- SG_ SteeringAngle : 0|16@1- (0.1,0) [-3276.8|3276.7] "Deg" Vector__XXX
->>>>>>> 71770e13145256aa752114d15196a43052a4086a
-=======
- SG_ SteeringAngle : 0|16@1- (0.1,0) [-3276.8|3276.7] "Deg"  GateWay
->>>>>>> 1aaf5dd (VCU측 시그널 추가)
-=======
- SG_ SteeringAngle : 0|16@1- (0.1,0) [-3276.8|3276.7] "Deg"  GateWay
->>>>>>> KAN-17-BODY-CAN-
 
 
 
