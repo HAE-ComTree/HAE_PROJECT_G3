@@ -43,6 +43,8 @@ on message GW_SSC_CmdSta {
     preRpm =3000;
     flag = 1;
     $Powertrain::TCU_Gear_Data::TCU_GearType = currGear;
+    $Powertrain::TCU_Gear_Data::TCU_Parking_Gear = 1;
+    output(P_TCU_Gear_Data);
     cancelTimer(tmrTCU);
   }
 }
