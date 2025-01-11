@@ -37,6 +37,7 @@ BU_: BCW FCA GateWay SCC MDPS
 
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 BO_ 1536 VCU_Emergency_Act: 1 GateWay
  SG_ Emergency_Act : 0|1@1+ (1,0) [0|1] ""  SCC
 
@@ -49,12 +50,21 @@ BO_ 87 FCA_NM_Flag: 1 FCA
 BO_ 50 VCU_Emergency_Act: 1 GateWay
  SG_ Emergency_Act : 0|1@1+ (1,0) [0|0] ""  SCC
 
+=======
+BO_ 1536 VCU_Emergency_Act: 1 GateWay
+ SG_ Emergency_Act : 0|1@1+ (1,0) [0|1] ""  SCC
+
+>>>>>>> 1aaf5dd (VCU측 시그널 추가)
 BO_ 88 BCW_NM_Flag: 1 BCW
- SG_ BCW_Flag : 0|1@1+ (1,1) [0|1] "" Vector__XXX
+ SG_ BCW_Flag : 0|1@1+ (1,1) [0|1] ""  GateWay
 
 BO_ 87 FCA_NM_Flag: 1 FCA
+<<<<<<< HEAD
  SG_ FCA_Flag : 0|1@1+ (1,1) [0|1] "" Vector__XXX
 >>>>>>> 71770e13145256aa752114d15196a43052a4086a
+=======
+ SG_ FCA_Flag : 0|1@1+ (1,1) [0|1] ""  GateWay
+>>>>>>> 1aaf5dd (VCU측 시그널 추가)
 
 BO_ 73 GW_NM_BCW: 1 GateWay
  SG_ NmSleepCmd_BCW : 0|1@1+ (1,0) [0|1] ""  BCW
@@ -126,6 +136,7 @@ BO_ 544 SCC_LineData: 2 SCC
 
 BO_ 529 MDPS_Col_Tq: 2 MDPS
 <<<<<<< HEAD
+<<<<<<< HEAD
  SG_ ColTq : 0|11@1+ (1,-1024) [-1024|1024] ""  GateWay
 
 BO_ 528 MDPS_Out_Tq: 2 MDPS
@@ -136,16 +147,26 @@ BO_ 528 MDPS_Out_Tq: 2 MDPS
 BO_ 528 MDPS_Out_Tq: 2 MDPS
  SG_ OutTq : 0|12@1+ (0.1,-204.8) [-204.8|204.7] "" Vector__XXX
 >>>>>>> 71770e13145256aa752114d15196a43052a4086a
+=======
+ SG_ ColTq : 0|11@1+ (1,-1024) [-1024|1024] ""  GateWay
+
+BO_ 528 MDPS_Out_Tq: 2 MDPS
+ SG_ OutTq : 0|12@1+ (0.1,-204.8) [-204.8|204.7] ""  GateWay
+>>>>>>> 1aaf5dd (VCU측 시그널 추가)
 
 BO_ 513 MDPS_Steering_Tq: 2 MDPS
  SG_ sig_SteeringTq : 0|12@1+ (0.01,-20.48) [-20.48|20.47] "Nm"  GateWay
 
 BO_ 512 MDPS_Steering_Angle: 2 MDPS
 <<<<<<< HEAD
+<<<<<<< HEAD
  SG_ SteeringAngle : 0|16@1- (0.1,0) [-3276.8|3276.7] "Deg"  GateWay
 =======
  SG_ SteeringAngle : 0|16@1- (0.1,0) [-3276.8|3276.7] "Deg" Vector__XXX
 >>>>>>> 71770e13145256aa752114d15196a43052a4086a
+=======
+ SG_ SteeringAngle : 0|16@1- (0.1,0) [-3276.8|3276.7] "Deg"  GateWay
+>>>>>>> 1aaf5dd (VCU측 시그널 추가)
 
 
 
