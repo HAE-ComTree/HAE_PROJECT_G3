@@ -54,6 +54,7 @@ on message EMS_Engine_Data {
 }
 
 on timer ActTCU {
+  $Powertrain::TCU_Gear_Data::TCU_Parking_Gear = 0;
   
   if(currGear == 1) {
     if(rpm > 3000) {
