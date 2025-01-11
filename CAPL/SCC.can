@@ -1,0 +1,137 @@
+﻿/*@!Encoding:65001*/
+includes
+{
+
+}
+
+/*@!Encoding:949*/
+
+variables
+{
+   /* SCC Tx Msg Define*/
+    message SCC_CmdSta C_SCC_CmdSta; 
+    message SCC_E_stop C_SCC_E_stop;
+    message SCC_LineData C_SCC_LineData;
+    message SCC_NM_Flag C_SCC_NM_Flag;
+    message SCC_Speed_Control C_SCC_Speed_Control;
+
+    int RearDetected;
+    int SideRoadDetected;
+    int Systemsta;
+  
+  
+   /*SCC_CmdSta Sig mapping*/
+    int LaneChStart;
+    int WaitingSta;
+    int StopSta;
+
+  
+  /* SCCMsgTx Timer 50ms*/
+    msTimer SCCMessageTimer;
+  
+  /* Monitoring Timer 50ms*/
+  
+    msTimer MonitorTimer;
+
+}
+
+on message GW_BCM_Rear_Vehicle_State
+{
+  RearDetected = this.Rear_Vehicle_state;
+}
+
+on message BCM_Side_Road_State
+{
+  SideRoadDetected = this.Side_Road_State;
+}
+
+void WaitingStaFlg()
+{
+  if(RearDetected == 1 && SideRoadDetected == 0) {
+    WaitingSta = 1;
+    Systemsta = 1;
+  }
+  else WaitingSta = 0;
+}
+
+void LaneChangeStaFlg()
+{
+  if(Systemsta == 1)
+  {
+  if(RearDetected == 0 && SideRoadDetected == 0) LaneChStart = 1;
+  else LaneChStart = 0;
+  }
+
+}
+
+void Stopsta()
+{ if(Systemsta == 1)
+{
+  if(RearDetected == 0 && SideRoadDetected == 1) StopSta = 1;
+  else StopSta = 0;
+}
+}
+
+on timer MonitorTimer
+{
+    WaitingStaFlg();
+    LaneChangeStaFlg();
+    Stopsta();
+}
+
+on timer SCCMessageTimer
+{
+  C_SCC_CmdSta.SCC_LaneCmd.phys = LaneChStart;
+  C_SCC_CmdSta.SCC_StopStaSig.phys = StopSta;
+  C_SCC_CmdSta.SCC_WaitSta.phys = WaitingSta;
+  output(C_SCC_CmdSta);
+  
+  
+    output (C_SCC_E_stop);
+    output(C_SCC_LineData);
+    output  (C_SCC_NM_Flag);
+    output( C_SCC_Speed_Control);
+}
+
+
+on start
+{ 
+    /*SCC_CmdSta Tx Msg Sig Init*/
+    C_SCC_CmdSta.SCC_LaneCmd.phys = 0;
+    C_SCC_CmdSta.SCC_StopStaSig.phys = 0;
+    C_SCC_CmdSta.SCC_WaitSta.phys = 0;
+    
+    /*SCC_E_stop Tx Msg Sig Init*/
+    C_SCC_E_stop.CF_Estop.phys = 0;
+  
+    /*SCC_LineData Tx Msg Sig Init*/
+    C_SCC_LineData.LKAS_LHWarning.phys = 0;
+    C_SCC_LineData.LKAS_RHWarning.phys = 0;
+    C_SCC_LineData.LKAS_State.phys = 0;
+    C_SCC_LineData.SCC_LKAS_ACT.phys = 0;
+  
+    /*SCC_NM_Flag Tx Msg Sig Init*/
+    C_SCC_NM_Flag.SCC_Flag = 0;
+ 
+    /*SCC_Speed_Control Tx Msg Sig Init*/
+    C_SCC_Speed_Control.CF_SCC_BreakACT.phys = 0;
+    C_SCC_Speed_Control.CF_SCC_Gear_State.phys = 0;
+    C_SCC_Speed_Control.CF_SCC_State.phys = 0;
+    C_SCC_Speed_Control.SCC_State_Sig.phys = 0;
+    C_SCC_Speed_Control.SCC_VS.phys = 0;
+    C_SCC_Speed_Control.SCC_VS_target.phys = 0;
+  
+   /* 후측방감지 변수*/
+    RearDetected = 0; 
+    SideRoadDetected = 0;
+    LaneChStart = 0;
+    WaitingSta = 0;
+    StopSta = 0;
+    Systemsta = 0;
+    
+  setTimerCyclic(MonitorTimer,0,50);
+  setTimerCyclic(SCCMessageTimer, 0,50);
+  
+}
+
+
