@@ -65,7 +65,7 @@ BO_ 68 GW_NM_EPB: 1 GateWay
 BO_ 67 GW_NM_TCU: 1 GateWay
  SG_ NmSleepCmd_TCU : 0|1@1+ (1,0) [0|1] ""  TCU
 
-BO_ 49 VCU_IGN1: 1 GateWay
+BO_ 305 VCU_IGN1: 1 GateWay
  SG_ IGN_State : 0|1@1+ (1,0) [0|1] ""  EMS,TCU
 
 BO_ 278 GW_SCC_Speed_Control: 5 GateWay
