@@ -40,9 +40,9 @@ BO_ 320 EMS_WheelSpd: 1 EMS
  SG_ WheelSpd : 0|8@1+ (1,0) [0|255] "km/h"  GateWay
 
 BO_ 281 GW_SSC_CmdSta: 1 GateWay
- SG_ SCC_WaitSta : 2|1@1+ (1,0) [0|1] "" Vector__XXX
- SG_ SCC_StopStaSig : 1|1@1+ (1,0) [0|1] "" Vector__XXX
- SG_ SCC_LanrCmd : 0|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ SCC_WaitSta : 2|1@1+ (1,0) [0|1] "" EMS
+ SG_ SCC_StopStaSig : 1|1@1+ (1,0) [0|1] "" EMS
+ SG_ SCC_LanrCmd : 0|1@1+ (1,0) [0|1] "" EMS
 
 BO_ 304 GW_BCM_WheelSpd_FL: 1 GateWay
  SG_ WheelSpd_FL : 0|8@1+ (1,0) [0|255] "km/h" Vector__XXX
