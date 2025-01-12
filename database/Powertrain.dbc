@@ -36,7 +36,10 @@ BS_:
 BU_: GateWay EMS EPB TCU
 
 
-BO_ 305 GW_SSC_CmdSta: 1 GateWay
+BO_ 320 EMS_WheelSpd: 1 Vector__XXX
+ SG_ WheelSpd : 0|8@1+ (1,0) [0|255] "km/h" Vector__XXX
+
+BO_ 281 GW_SSC_CmdSta: 1 GateWay
  SG_ SCC_WaitSta : 2|1@1+ (1,0) [0|1] "" Vector__XXX
  SG_ SCC_StopStaSig : 1|1@1+ (1,0) [0|1] "" Vector__XXX
  SG_ SCC_LanrCmd : 0|1@1+ (1,0) [0|1] "" Vector__XXX
@@ -65,27 +68,26 @@ BO_ 67 GW_NM_TCU: 1 GateWay
 BO_ 49 VCU_IGN1: 1 GateWay
  SG_ IGN_State : 0|1@1+ (1,0) [0|1] ""  TCU
 
-BO_ 546 SCC_Speed_Control: 5 GateWay
+BO_ 278 GW_SCC_Speed_Control: 5 GateWay
  SG_ SCC_ACCEL_REF : 24|11@1+ (0.01,-10.23) [-10.23|10.24] "m/s^2"  TCU,EMS
  SG_ SCC_VS_Target : 16|8@1+ (1,0) [0|255] "km/h"  EMS
  SG_ SCC_VS : 8|8@1+ (1,0) [0|255] "km/h"  EMS
  SG_ CF_SCC_BreakACT : 0|1@1+ (1,0) [0|1] ""  TCU,EPB
 
-BO_ 529 SCC_E_stop: 1 GateWay
+BO_ 277 GW_SCC_E_stop: 1 GateWay
  SG_ CF_Estop : 0|1@1+ (1,0) [0|1] ""  TCU,EPB
 
-BO_ 288 EMS_Engine_Data: 4 EMS
- SG_ EMS_SPD : 24|8@1+ (1,0) [0|255] "km/h" Vector__XXX
+BO_ 259 EMS_Engine_Data: 4 EMS
  SG_ EMS_Brake_ACT : 1|1@1+ (1,0) [0|1] ""  GateWay,TCU,EPB
  SG_ EMS_Accel_ACT : 0|1@1+ (1,0) [0|1] ""  GateWay,TCU
  SG_ EMS_Tq_Data : 2|6@1+ (10,0) [0|630] "Nm"  GateWay,TCU
  SG_ EMS_RPM_Data : 8|16@1+ (0.25,1) [0|16383.75] "rpm"  TCU,GateWay
 
-BO_ 273 EPB_Press_Data: 2 EPB
+BO_ 258 EPB_Press_Data: 2 EPB
  SG_ EPB_CylinderPress : 1|12@1+ (0.1,0) [0|409.5] "Bar"  GateWay
  SG_ EPB_CylinderState : 0|1@1+ (1,0) [0|1] ""  GateWay
 
-BO_ 272 EPB_State_Data: 1 EPB
+BO_ 257 EPB_State_Data: 1 EPB
  SG_ EPB_ACT : 1|1@1+ (1,0) [0|1] ""  GateWay
  SG_ EPB_State : 0|1@1+ (1,0) [0|1] ""  GateWay
 
