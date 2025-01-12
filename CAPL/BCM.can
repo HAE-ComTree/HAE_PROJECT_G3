@@ -7,19 +7,12 @@ includes
 /*@!Encoding:949*/
 
 variables
-{   //연습용 
-    message VCU_IVI_Msg           b_VCU_IVI_Msg; int a; int b;
-    int flag;
-  
-  
+{   
     // TX 메시지
+    message VCU_IGN1              b_VCU_IGN1;
     message BCM_NM_Flag           b_BCM_NM_Flag;
     message BCM_5s                b_BCM_5s;
     message BCM_EDSS_SW_STATE     b_BCM_EDSS_SW_STATE;  int SW_STATE1; int SW_STATE2;
-    message BCM_Wheel_Speed_FL    b_BCM_Wheel_Speed_FL; int Speed_FL;
-    message BCM_Wheel_Speed_FR    b_BCM_Wheel_Speed_FR; int Speed_FR;
-    message BCM_Wheel_Speed_RL    b_BCM_Wheel_Speed_RL; int Speed_RL;
-    message BCM_Wheel_Speed_RR    b_BCM_Wheel_Speed_RR; int Speed_RR;
     message BCM_EDSS_CSW          b_BCM_EDSS_CSW;       int EDSS_CSW;
     message BCM_Seat              b_BCM_Seat;           int Seat_FL; int Seat_FR; int Seat_RL; int Seat_RR;
     message BCM_AirBag_state      b_BCM_AirBag_state;   int AirBag_state;
@@ -28,8 +21,8 @@ variables
     message BCM_Steering_Pos      b_BCM_Steering_Pos;    int Steering_Pos;
     
     message BCM_Rear_Vehicle_State b_BCM_Rear_Vehicle_State; int Rear_Vehicle_State;
-    message BCM_Side_Road_State   b_BCM_Side_Road_State; int Side_Road_State;
-    msTimer moving;
+    message BCM_Side_Road_State    b_BCM_Side_Road_State;    int Side_Road_State;
+    msTimer moving; int flag = 0; 
   
     int NM_flag = 0;
     int IGN1_flag = 0;
@@ -52,26 +45,14 @@ variables
 
 on timer BCMMessageTimer
 { 
-  //연습용
-  output(b_VCU_IVI_Msg);
-  
-  
-  
-  
+  output(b_VCU_IGN1);
   output(b_BCM_NM_Flag);
   output(b_BCM_EDSS_SW_STATE);
-  
-  //차속
-  b_BCM_Wheel_Speed_FL.Wheel_Speed_FL.phys = currentValue;
-  output(b_BCM_Wheel_Speed_FL);
   
   //5초 카운트
   b_BCM_5s.Count_5s.phys = BCM_cnt5s;
   output(b_BCM_5s); 
 
-  output(b_BCM_Wheel_Speed_FR);
-  output(b_BCM_Wheel_Speed_RL);
-  output(b_BCM_Wheel_Speed_RR);
   output(b_BCM_EDSS_CSW);
   output(b_BCM_Seat);
   output(b_BCM_AirBag_state);
@@ -111,10 +92,18 @@ on timer wheelspdIncrease
 on timer EDSS_5sCnt
 {
   if(count5s < 5) {  
-    count5s++;
-    BCM_cnt5s = 0;
-    @sysvar::BCM::sv_Count_5s = count5s;
-    setTimer(EDSS_5sCnt, 1000);
+    if (@sysvar::BCM::sv_BCM_EDSS_CANCEL_SW == 0) {
+      count5s++;
+      BCM_cnt5s = 0;
+      @sysvar::BCM::sv_Count_5s = count5s;
+      setTimer(EDSS_5sCnt, 1000);
+    }
+      
+    else if (@sysvar::BCM::sv_BCM_EDSS_CANCEL_SW == 1) {
+      setControlVisibility("Cluster","count_5s", 0);
+      setControlVisibility("Cluster","count_5s_message",0); 
+      setControlVisibility("Cluster","cancel_message", 1);
+    }
   }
   else
   { 
@@ -190,14 +179,6 @@ void checkWakeupCondition()
 /* 초기화 */
 on start
 {   
-    //연습용
-    @sysvar::BCM::pra_edss_act = 0;
-    @sysvar::BCM::pra_ecall_req = 0;
-    b_VCU_IVI_Msg.EDSS_Act.phys = 0; a=0;
-    b_VCU_IVI_Msg.ECall_Req.phys = 0; b=0;
-  
-  
-  
     @sysvar::IGN::sv_IGN=0;
     @sysvar::BCM::sv_EDSS_Driver_On_Off = 0;
     @sysvar::BCM::sv_EDSS_Passenger_On_Off = 0;
@@ -217,17 +198,14 @@ on start
   
     @sysvar::BCM::sv_Rear_Vehicle_state = 0;
     @sysvar::BCM::sv_Side_Road_State = 0;
-  
+    
+    b_VCU_IGN1.IGN_State.phys = 0;
     b_BCM_NM_Flag.NmSleepFlag_BCM.phys = 0;
   
     b_BCM_5s.Count_5s.phys = 0; EDSS_cnt = 0; count5s = 0; BCM_cnt5s = 0; //setTimer(EDSS_5sCnt,1000);
 // 5초 카운트 초기화
     b_BCM_EDSS_SW_STATE.EDSS_Driver_On_Off.phys = 0; SW_STATE1 = 0;
     b_BCM_EDSS_SW_STATE.EDSS_Passenger_On_Off.phys = 0; SW_STATE2 = 0; 
-    b_BCM_Wheel_Speed_FL.Wheel_Speed_FL.phys = 0; Speed_FL = 0; 
-    b_BCM_Wheel_Speed_FR.Wheel_Speed_FR.phys = 0; Speed_FR = 0;
-    b_BCM_Wheel_Speed_RL.Wheel_Speed_RL.phys = 0; Speed_RL = 0;
-    b_BCM_Wheel_Speed_RR.Wheel_Speed_RR.phys = 0; Speed_RR = 0; 
     b_BCM_EDSS_CSW.BCM_EDSS_CANCEL_SW.phys = 0; EDSS_CSW = 0; 
     b_BCM_Seat.Seat_FL.phys = 0; Seat_FL = 0; Seat_FR = 0; Seat_RL = 0; Seat_RR = 0; 
     b_BCM_AirBag_state.AirBag_state.phys = 0; AirBag_state = 0; 
@@ -239,7 +217,7 @@ on start
     b_BCM_Side_Road_State.Side_Road_State.phys = 0; Side_Road_State = 0;
   
     setTimerCyclic(BCMMessageTimer, 0, 100); // 100ms 주기로 송신
-    setTimerCyclic(moving, 0, 150); flag=0;
+    setTimerCyclic(moving, 0, 150); flag=0; 
   
     wheelSpdInit();
   
@@ -252,6 +230,7 @@ on start
 on sysvar sysvar::IGN::sv_IGN 
 {   
     IGN1_flag = @this;
+    b_VCU_IGN1.IGN_State.phys = IGN1_flag;
 }
 
 //시스템 변수
@@ -277,26 +256,6 @@ on sysvar sysvar::BCM::sv_EDSS_Passenger_On_Off {
         BCM_cnt5s = 0;
         @sysvar::BCM::sv_Count_5s = 0;
     }
-}
-
-on sysvar sysvar::BCM::sv_Wheel_Speed_FL {
-    Speed_FL = @this;
-    b_BCM_Wheel_Speed_FL.Wheel_Speed_FL.phys = Speed_FL; 
-}
-
-on sysvar sysvar::BCM::sv_Wheel_Speed_FR {
-    Speed_FR = @this;
-    b_BCM_Wheel_Speed_FR.Wheel_Speed_FR.phys = Speed_FR; 
-}
-
-on sysvar sysvar::BCM::sv_Wheel_Speed_RL {
-    Speed_RL = @this;
-    b_BCM_Wheel_Speed_RL.Wheel_Speed_RL.phys = Speed_RL; 
-}
-
-on sysvar sysvar::BCM::sv_Wheel_Speed_RR {
-    Speed_RR = @this;
-    b_BCM_Wheel_Speed_RR.Wheel_Speed_RR.phys = Speed_RR; 
 }
 
 on sysvar sysvar::BCM::sv_BCM_EDSS_CANCEL_SW {
@@ -347,7 +306,6 @@ on sysvar sysvar::BCM::sv_Str_Pos {
 on sysvar sysvar::BCM::sv_Rear_Vehicle_state {
     Rear_Vehicle_State = @this;
     b_BCM_Rear_Vehicle_State.Rear_Vehicle_state.phys = Rear_Vehicle_State; 
-    //여기에 첫화면 등록할까..
 }
 
 on sysvar sysvar::BCM::sv_Side_Road_State {
@@ -357,6 +315,36 @@ on sysvar sysvar::BCM::sv_Side_Road_State {
 
 on timer moving
 { // 1. 측후방 ON, 갓길 OFF -> 차선 유지
+  if($SSC_CmdSta::SCC_LaneCmd == 0 && $SSC_CmdSta::SCC_StopStaSig ==0 && $SSC_CmdSta::SCC_WaitSta == 1) {
+    if (@sysvar::BCM::moving_car<7) {
+      @sysvar::BCM::moving_car++;
+      flag = 1;
+    } 
+  } 
+  
+  // 2. 측후방 OFF, 갓길 OFF ->차선 이동
+  else if ((0<flag) && (flag<17) && $SSC_CmdSta::SCC_LaneCmd == 1 && $SSC_CmdSta::SCC_StopStaSig ==0 && $SSC_CmdSta::SCC_WaitSta == 0) {
+    if (@sysvar::BCM::moving_car<12) {
+        @sysvar::BCM::moving_car++;
+    }
+    flag++;
+  }
+  
+  // 3. 측후방 OFF, 갓길 ON ->차선 이동
+  else if (flag==17 && $SSC_CmdSta::SCC_LaneCmd == 1 && $SSC_CmdSta::SCC_StopStaSig ==0 && $SSC_CmdSta::SCC_WaitSta == 0) {
+    if (@sysvar::BCM::moving_car<16) {
+        @sysvar::BCM::moving_car++;
+        
+    }
+  }
+  // 4. 측후방 OFF, 갓길 ON ->정차
+  else if ($SSC_CmdSta::SCC_LaneCmd == 0 && $SSC_CmdSta::SCC_StopStaSig ==1 && $SSC_CmdSta::SCC_WaitSta == 0) {
+    if (@sysvar::BCM::moving_car<21) {
+        @sysvar::BCM::moving_car++;
+    }
+  }
+  
+  /* // 1. 측후방 ON, 갓길 OFF -> 차선 유지
   if(Rear_Vehicle_State == 1 && Side_Road_State==0) {
     if (@sysvar::BCM::moving_car<7) {
       @sysvar::BCM::moving_car++;
@@ -384,16 +372,5 @@ on timer moving
     if (@sysvar::BCM::moving_car<19) {
         @sysvar::BCM::moving_car++;
     }
-  }
-}
-
-////////연습////////////////
-on sysvar sysvar::BCM::pra_edss_act {
-    a = @this;
-    b_VCU_IVI_Msg.EDSS_Act.phys = a; 
-}
-
-on sysvar sysvar::BCM::pra_ecall_req {
-    b = @this;
-    b_VCU_IVI_Msg.ECall_Req.phys = a; 
+  } */
 }
