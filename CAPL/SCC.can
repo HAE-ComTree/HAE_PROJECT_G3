@@ -40,7 +40,7 @@ on message GW_BCM_Rear_Vehicle_State
   RearDetected = this.Rear_Vehicle_state;
 }
 
-on message BCM_Side_Road_State
+on message GW_BCM_Side_Road_State
 {
   SideRoadDetected = this.Side_Road_State;
 }

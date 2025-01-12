@@ -17,9 +17,9 @@ variables {
   float rpm = 0;
   int gearIndex = 1;
   
-  message Powertrain::EMS_Engine_Data engMsg;
-  message Powertrain::EMS_NM_Flag P_EMS_NM_Flag;
-  message Powertrain::EMS_Engine_Data P_EMS_Engine_Data;
+  message can1::EMS_Engine_Data engMsg;
+  message can1::EMS_NM_Flag P_EMS_NM_Flag;
+  message can1::EMS_Engine_Data P_EMS_Engine_Data;
   
   /*-----------------------------------------------------------------------------*/
 
@@ -46,15 +46,15 @@ variables {
 }
 
 on start {
-  $Powertrain::EMS_Engine_Data::EMS_RPM_Data = 0;
+  $can1::EMS_Engine_Data::EMS_RPM_Data = 0;
   currGear = 1;
 
   setTimerCyclic(tmrEMS, 0, 50); // 100ms 주기로 송신
-  $Powertrain::EMS_NM_Flag::EMS_Flag.phys = 0;
-  $Powertrain::EMS_Engine_Data::EMS_RPM_Data.phys = 1100;
-  $Powertrain::EMS_Engine_Data::EMS_Accel_ACT.phys = 0;
-  $Powertrain::EMS_Engine_Data::EMS_Brake_ACT.phys = 0;
-  $Powertrain::EMS_Engine_Data::EMS_Tq_Data.phys = 0;
+  $can1::EMS_NM_Flag::EMS_Flag.phys = 0;
+  $can1::EMS_Engine_Data::EMS_RPM_Data.phys = 1100;
+  $can1::EMS_Engine_Data::EMS_Accel_ACT.phys = 0;
+  $can1::EMS_Engine_Data::EMS_Brake_ACT.phys = 0;
+  $can1::EMS_Engine_Data::EMS_Tq_Data.phys = 0;
   
   /*-----------------------------------------------------------------------------*/
     WheelSpd = 80;
@@ -77,30 +77,32 @@ on timer tmrEMS {
   output(P_EMS_Engine_Data);
 }
 
-on timer ActEMS {
+//on timer ActEMS {
+on signal WheelSpd_FL
+{
   gearIndex = currGear;  // gear=1 => index=0
   
   // gearIndex 안전 범위
   if(gearIndex < 1) gearIndex=1;
   if(gearIndex > 5) gearIndex=5;
 
-  if(WheelSpd != 0) {
+  //if(WheelSpd != 0) {
     // rpm 계산
     rpm = (WheelSpd*gearratio[gearIndex]*finalDriverRatio*1000000)/(3.78*240*50+4800*18);
-    $Powertrain::EMS_Engine_Data::EMS_RPM_Data = rpm;
+    $can1::EMS_Engine_Data::EMS_RPM_Data = rpm;
     setTimer(ActEMS, 50);
-  }
-  else {
-    $Powertrain::EMS_Engine_Data::EMS_RPM_Data = 1000;
-  }
+  //}
+  //else {
+    //$can1::EMS_Engine_Data::EMS_RPM_Data = 1000;
+  //}
   
-  $Powertrain::EMS_Engine_Data::EMS_Tq_Data = (175*5949)/rpm;
+  //$can1::EMS_Engine_Data::EMS_Tq_Data = (175*5949)/rpm;
 
   //write("EMS => speed=%.1f km/h, gear=%d, rpm=%.1f", @sysvar::EMS_Var::speed_chk, currGear, @sysvar::EMS_Var::EngineRPM);
 }
 
 
-on message Powertrain::TCU_Gear_Data {
+on message can1::TCU_Gear_Data {
   currGear = this.TCU_GearType;
 }
 

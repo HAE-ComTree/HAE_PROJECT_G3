@@ -8,9 +8,9 @@ variables
 {
   msTimer tmrEPB;
   
-  message Powertrain::EPB_Press_Data P_EPB_Press_Data;
-  message Powertrain::EPB_State_Data P_EPB_State_Data;
-  message Powertrain::EPB_NM_Flag P_EPB_NM_Flag;
+  message can1::EPB_Press_Data P_EPB_Press_Data;
+  message can1::EPB_State_Data P_EPB_State_Data;
+  message can1::EPB_NM_Flag P_EPB_NM_Flag;
 }
 
 on timer tmrEPB {
@@ -20,32 +20,32 @@ on timer tmrEPB {
 }
 
 on start {
-  $Powertrain::EPB::EPB_State_Data::EPB_ACT=0;
-  $Powertrain::EPB::EPB_State_Data::EPB_State=0;
+  $can1::EPB::EPB_State_Data::EPB_ACT=0;
+  $can1::EPB::EPB_State_Data::EPB_State=0;
   setTimerCyclic(tmrEPB, 0, 100);
-  $Powertrain::EPB_NM_Flag::EPB_Flag.phys=0;
-  $Powertrain::EPB_State_Data::EPB_ACT.phys=0;
-  $Powertrain::EPB_State_Data::EPB_State.phys=0;
-  $Powertrain::EPB_Press_Data::EPB_CylinderPress.phys=0;
-  $Powertrain::EPB_Press_Data::EPB_CylinderState.phys=0;
+  $can1::EPB_NM_Flag::EPB_Flag.phys=0;
+  $can1::EPB_State_Data::EPB_ACT.phys=0;
+  $can1::EPB_State_Data::EPB_State.phys=0;
+  $can1::EPB_Press_Data::EPB_CylinderPress.phys=0;
+  $can1::EPB_Press_Data::EPB_CylinderState.phys=0;
 }
 
 void activeEPB() {
-  $Powertrain::EPB::EPB_State_Data::EPB_ACT=1;
-  $Powertrain::EPB::EPB_State_Data::EPB_State=1;
+  $can1::EPB::EPB_State_Data::EPB_ACT=1;
+  $can1::EPB::EPB_State_Data::EPB_State=1;
   
-  $Powertrain::EPB::EPB_Press_Data::EPB_CylinderState=1;
-  $Powertrain::EPB::EPB_Press_Data::EPB_CylinderPress=350;
-  $Powertrain::EPB::EPB_Press_Data::EPB_CylinderState=0;
+  $can1::EPB::EPB_Press_Data::EPB_CylinderState=1;
+  $can1::EPB::EPB_Press_Data::EPB_CylinderPress=350;
+  $can1::EPB::EPB_Press_Data::EPB_CylinderState=0;
 }
 
 void deactivateEPB() {
-  $Powertrain::EPB::EPB_State_Data::EPB_ACT=0;
-  $Powertrain::EPB::EPB_State_Data::EPB_State=0;
+  $can1::EPB::EPB_State_Data::EPB_ACT=0;
+  $can1::EPB::EPB_State_Data::EPB_State=0;
   
-  $Powertrain::EPB::EPB_Press_Data::EPB_CylinderState=1;
-  $Powertrain::EPB::EPB_Press_Data::EPB_CylinderPress=0;
-  $Powertrain::EPB::EPB_Press_Data::EPB_CylinderState=0;
+  $can1::EPB::EPB_Press_Data::EPB_CylinderState=1;
+  $can1::EPB::EPB_Press_Data::EPB_CylinderPress=0;
+  $can1::EPB::EPB_Press_Data::EPB_CylinderState=0;
 }
 
 on message SCC_E_stop {
