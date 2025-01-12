@@ -13,9 +13,9 @@ variables {
   int flag = 0;
   float preRpm;
   
-  message Powertrain::TCU_Gear_Data gearData;
-  message Powertrain::TCU_NM_Flag P_TCU_NM_Flag;
-  message Powertrain::TCU_Gear_Data P_TCU_Gear_Data;
+  message CAN1::TCU_Gear_Data gearData;
+  message CAN1::TCU_NM_Flag P_TCU_NM_Flag;
+  message CAN1::TCU_Gear_Data P_TCU_Gear_Data;
 }
 
 on timer tmrTCU {
@@ -25,25 +25,25 @@ on timer tmrTCU {
 
 on start {
   currGear = 1;
-  rpm = $Powertrain::EMS_Engine_Data::EMS_RPM_Data;
+  rpm = $CAN1::EMS_Engine_Data::EMS_RPM_Data;
   
-  $Powertrain::TCU_Gear_Data::TCU_GearType = currGear;
+  $CAN1::TCU_Gear_Data::TCU_GearType = currGear;
   
-  setTimerCyclic(tmrTCU, 0, 50);
-  $Powertrain::TCU::TCU_Gear_Data::TCU_GearState.phys = 0;
-  $Powertrain::TCU::TCU_Gear_Data::TCU_GearType.phys = 1;
-  $Powertrain::TCU::TCU_Gear_Data::TCU_Parking_Gear.phys = 0;
-  $Powertrain::TCU::TCU_NM_Flag::TCU_Flag.phys = 0;
-  setTimer(ActTCU, 50);
+  setTimerCyclic(tmrTCU, 0, 20);
+  $CAN1::TCU::TCU_Gear_Data::TCU_GearState.phys = 0;
+  $CAN1::TCU::TCU_Gear_Data::TCU_GearType.phys = 1;
+  $CAN1::TCU::TCU_Gear_Data::TCU_Parking_Gear.phys = 0;
+  $CAN1::TCU::TCU_NM_Flag::TCU_Flag.phys = 0;
+  setTimerCyclic(ActTCU, 0, 40);
 }
 
-on message GW_SSC_CmdSta {
-  if(this.SCC_StopStaSig == 1) {
+on signal_update CAN1::EMS_Engine_Data::EMS_Brake_ACT {
+  if(this == 1) { 
     currGear = 0;
     preRpm =3000;
     flag = 1;
-    $Powertrain::TCU_Gear_Data::TCU_GearType = currGear;
-    $Powertrain::TCU_Gear_Data::TCU_Parking_Gear = 1;
+    $CAN1::TCU_Gear_Data::TCU_GearType = currGear;
+    $CAN1::TCU_Gear_Data::TCU_Parking_Gear = 1;
     output(P_TCU_Gear_Data);
     cancelTimer(tmrTCU);
   }
@@ -54,14 +54,14 @@ on message EMS_Engine_Data {
 }
 
 on timer ActTCU {
-  $Powertrain::TCU_Gear_Data::TCU_Parking_Gear = 0;
+  $CAN1::TCU_Gear_Data::TCU_Parking_Gear = 0;
   
   if(currGear == 1) {
     if(rpm > 3000) {
       currGear++;
       flag=1;
       preRpm = 1300;
-      $Powertrain::TCU_Gear_Data::TCU_GearType = currGear;
+      $CAN1::TCU_Gear_Data::TCU_GearType = currGear;
     }
   }
   else if(currGear == 2) {
@@ -75,7 +75,7 @@ on timer ActTCU {
       currGear++;
       flag=1;
       preRpm = 2000;
-      $Powertrain::TCU_Gear_Data::TCU_GearType = currGear;
+      $CAN1::TCU_Gear_Data::TCU_GearType = currGear;
     }
   }
     else if(currGear == 3) {
@@ -89,7 +89,7 @@ on timer ActTCU {
       currGear++;
       flag=1;
       preRpm = 2500;
-      $Powertrain::TCU_Gear_Data::TCU_GearType = currGear;
+      $CAN1::TCU_Gear_Data::TCU_GearType = currGear;
     }
   }
     else if(currGear == 4) {
@@ -103,7 +103,7 @@ on timer ActTCU {
       currGear++;
       flag=1;
       preRpm = 3000;
-      $Powertrain::TCU_Gear_Data::TCU_GearType = currGear;
+      $CAN1::TCU_Gear_Data::TCU_GearType = currGear;
     }
   }
   else if (currGear==5) {
@@ -111,14 +111,13 @@ on timer ActTCU {
       currGear--;
       flag=1;
       preRpm=8000;
-      $Powertrain::TCU_Gear_Data::TCU_GearType = currGear;
+      $CAN1::TCU_Gear_Data::TCU_GearType = currGear;
     }
   }
   else {}
   
   if(!flag) preRpm=rpm;
   
-  $Powertrain::TCU_Gear_Data::TCU_GearType=currGear;
+  $CAN1::TCU_Gear_Data::TCU_GearType=currGear;
   flag=0;
-  setTimer(ActTCU, 50);
 }

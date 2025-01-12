@@ -37,7 +37,7 @@ BU_: Gateway IVI DMS BCM
 
 
 BO_ 832 GW_EMS_WheelSpd: 1 Gateway
- SG_ WheelSpd : 0|8@1+ (1,0) [0|255] "km/h"  BCM
+ SG_ WheelSpd : 0|8@1+ (1,0) [0|255] "km/h" Vector__XXX
 
 BO_ 999 SSC_CmdSta: 1 Gateway
  SG_ SCC_WaitSta : 2|1@1+ (1,0) [0|0] ""  BCM

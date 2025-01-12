@@ -42,9 +42,9 @@ BO_ 571 GW_BCM_Side_Road_State: 1 GateWay
 BO_ 570 GW_BCM_Rear_Vehicle_State: 1 GateWay
  SG_ Rear_Vehicle_state : 0|1@1+ (1,0) [0|1] ""  SCC
 
-BO_ 537 SCC_CmdSta: 1 SCC
- SG_ SCC_WaitSta : 2|1@1+ (1,0) [0|1] ""  GateWay
- SG_ SCC_StopStaSig : 1|1@1+ (1,0) [0|1] ""  GateWay
+BO_ 537 SCC_CmdSta: 3 SCC
+ SG_ SCC_WaitSta : 16|1@1+ (1,0) [0|1] ""  GateWay
+ SG_ SCC_StopStaSig : 8|1@1+ (1,0) [0|1] ""  GateWay
  SG_ SCC_LaneCmd : 0|1@1+ (1,0) [0|1] ""  GateWay
 
 BO_ 50 VCU_Emergency_Act: 1 GateWay
@@ -80,40 +80,40 @@ BO_ 70 GW_NM_MDPS: 1 GateWay
 BO_ 49 VCU_IGN1: 1 GateWay
  SG_ IGN_State : 0|1@1+ (1,0) [0|1] ""  MDPS
 
-BO_ 514 GW_EPB_Press_Data: 2 GateWay
- SG_ EPB_CylinderPress : 1|12@1+ (0.1,0) [0|409.5] "Bar"  SCC
+BO_ 514 GW_EPB_Press_Data: 3 GateWay
+ SG_ EPB_CylinderPress : 8|12@1+ (0.1,0) [0|409.5] "Bar"  SCC
  SG_ EPB_CylinderState : 0|1@1+ (1,0) [0|1] ""  SCC
 
-BO_ 513 GW_EPB_State_Data: 1 GateWay
- SG_ EPB_ACT : 1|1@1+ (1,0) [0|1] ""  SCC
+BO_ 513 GW_EPB_State_Data: 2 GateWay
+ SG_ EPB_ACT : 8|1@1+ (1,0) [0|1] ""  SCC
  SG_ EPB_State : 0|1@1+ (1,0) [0|1] ""  SCC
 
-BO_ 512 GW_TCU_Gear_Data: 1 GateWay
+BO_ 512 GW_TCU_Gear_Data: 2 GateWay
  SG_ TCU_GearState : 0|1@1+ (1,0) [0|1] ""  SCC
- SG_ TCU_GearType : 1|4@1+ (1,0) [0|15] ""  SCC,MDPS
+ SG_ TCU_GearType : 8|4@1+ (1,0) [0|15] ""  SCC,MDPS
 
-BO_ 536 BCW_Data: 1 BCW
+BO_ 536 BCW_Data: 2 BCW
  SG_ BCW_LR : 0|2@1+ (1,0) [0|2] ""  SCC,GateWay
- SG_ BCWState : 2|2@1+ (1,0) [0|3] ""  SCC,GateWay
+ SG_ BCWState : 8|2@1+ (1,0) [0|3] ""  SCC,GateWay
 
 BO_ 535 FCA_Data: 1 FCA
  SG_ FCAState : 0|2@1+ (1,0) [0|3] ""  SCC,GateWay
 
-BO_ 534 SCC_Speed_Control: 3 SCC
- SG_ SCC_VS_target : 16|8@1+ (1,0) [0|254] "km/h"  GateWay
- SG_ SCC_VS : 8|8@1+ (1,0) [0|254] "km/h"  GateWay
- SG_ CF_SCC_Gear_State : 2|4@1+ (1,0) [0|15] ""  GateWay
+BO_ 534 SCC_Speed_Control: 6 SCC
+ SG_ SCC_VS_target : 40|8@1+ (1,0) [0|254] "km/h"  GateWay
+ SG_ SCC_VS : 32|8@1+ (1,0) [0|254] "km/h"  GateWay
+ SG_ CF_SCC_Gear_State : 24|4@1+ (1,0) [0|15] ""  GateWay
  SG_ CF_SCC_State : 0|1@1+ (1,0) [0|1] ""  GateWay
- SG_ CF_SCC_BreakACT : 1|1@1+ (1,0) [0|1] ""  GateWay
- SG_ SCC_State_Sig : 6|2@1+ (1,0) [0|4] ""  GateWay
+ SG_ CF_SCC_BreakACT : 8|1@1+ (1,0) [0|1] ""  GateWay
+ SG_ SCC_State_Sig : 16|2@1+ (1,0) [0|4] ""  GateWay
 
 BO_ 533 SCC_E_stop: 1 SCC
  SG_ CF_Estop : 0|1@1+ (1,0) [0|1] ""  GateWay
 
-BO_ 532 SCC_LineData: 2 SCC
- SG_ LKAS_LHWarning : 3|2@1+ (1,0) [0|3] ""  GateWay
- SG_ LKAS_RHWarning : 1|2@1+ (1,0) [0|3] ""  GateWay
- SG_ LKAS_State : 8|8@1+ (1,0) [0|7] ""  GateWay
+BO_ 532 SCC_LineData: 4 SCC
+ SG_ LKAS_LHWarning : 16|2@1+ (1,0) [0|3] ""  GateWay
+ SG_ LKAS_RHWarning : 8|2@1+ (1,0) [0|3] ""  GateWay
+ SG_ LKAS_State : 24|8@1+ (1,0) [0|7] ""  GateWay
  SG_ SCC_LKAS_ACT : 0|1@1+ (1,0) [0|1] ""  GateWay
 
 BO_ 531 MDPS_Col_Tq: 2 MDPS
