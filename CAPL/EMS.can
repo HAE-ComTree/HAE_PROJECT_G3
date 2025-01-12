@@ -108,10 +108,10 @@ on start {
   $CAN1::EMS_Engine_Data::EMS_RPM_Data = 0;
   currGear = 1;
 
-  setTimerCyclic(tmrEMS, 0, 50); // 50ms 주기로 송신
+  setTimerCyclic(tmrEMS, 0, 10); // 10ms 주기로 송신
   
   $CAN1::EMS_NM_Flag::EMS_Flag.phys = 0;
-  $CAN1::EMS_Engine_Data::EMS_RPM_Data.phys = 1100;
+  $CAN1::EMS_Engine_Data::EMS_RPM_Data.phys = 10;
   $CAN1::EMS_Engine_Data::EMS_Accel_ACT.phys = 0;
   $CAN1::EMS_Engine_Data::EMS_Brake_ACT.phys = 0;
   $CAN1::EMS_Engine_Data::EMS_Tq_Data.phys = 0;

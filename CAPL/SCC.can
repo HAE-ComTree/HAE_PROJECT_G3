@@ -1,0 +1,54 @@
+﻿/*@!Encoding:65001*/
+includes
+{
+  
+}
+
+variables
+{
+  // SCC 관련 상태
+  int sccActive = 0;          // 내부 플래그: SCC 동작 여부
+  double sccSpeed = 0.0;      // 현재 속도
+  double sccTarget = 0.0;     // 목표 속도
+  double sccAccel = 0.0;      // 목표 가속도 (m/s^2)
+
+  // BCW 상태 가정 (LKAS 가능 여부에 사용)
+  // 실제론 BCW.can 등에서 메시지나 sysvar 업데이트를 받을 수 있음
+  int bCWsignal = 0;          // BCW_LR 등 가정 (0=사각지대X, 1 or 2=사각지대 감지)
+}
+
+on start
+{
+  $CF_SCC_Gear_State = $Chassis::GateWay::TCU_Gear_Data::TCU_GearType;
+
+  // LKAS 관련 초기화
+  $LKAS_LHWarning  = 0;
+  $LKAS_RHWarning  = 0;
+  $LKAS_State   = 0;
+
+  // FCA_State (예: 0=OFF)
+  @sysvar::FCA_Var::Warning_F = 0;  // 패널에서 변경 가능하다고 가정
+  @sysvar::SCC_Var::SCC_VS_Target = 0;
+  
+}
+
+on signal_update Chassis::GateWay::TCU_Gear_Data::TCU_GearType {
+  $CF_SCC_Gear_State = $Chassis::GateWay::TCU_Gear_Data::TCU_GearType;
+}
+
+on sysvar_update SCC_Var::SCC_VS_Target {
+  $SCC_VS_target = @this;
+}
+
+on sysvar_update SCC_Var::SCC_actv {
+  $Chassis::SCC::CF_SCC_State = @this;
+  $Chassis::SCC::SCC_E_stop::CF_Estop = @this;
+}
+
+on sysvar_update SCC_Var::EstopSig {
+  $Chassis::SCC::SCC_E_stop::CF_Estop = @this;
+}
+
+on signal_update Chassis::GateWay::EPB_State_Data::EPB_ACT {
+  $Chassis::SCC::SCC_Speed_Control::CF_SCC_BreakACT = this;
+}

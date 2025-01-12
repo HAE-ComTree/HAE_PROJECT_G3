@@ -29,12 +29,12 @@ on start {
   
   $CAN1::TCU_Gear_Data::TCU_GearType = currGear;
   
-  setTimerCyclic(tmrTCU, 0, 50);
+  setTimerCyclic(tmrTCU, 0, 20);
   $CAN1::TCU::TCU_Gear_Data::TCU_GearState.phys = 0;
   $CAN1::TCU::TCU_Gear_Data::TCU_GearType.phys = 1;
   $CAN1::TCU::TCU_Gear_Data::TCU_Parking_Gear.phys = 0;
   $CAN1::TCU::TCU_NM_Flag::TCU_Flag.phys = 0;
-  setTimer(ActTCU, 50);
+  setTimerCyclic(ActTCU, 0, 40);
 }
 
 on signal_update CAN1::EMS_Engine_Data::EMS_Brake_ACT {
@@ -120,5 +120,4 @@ on timer ActTCU {
   
   $CAN1::TCU_Gear_Data::TCU_GearType=currGear;
   flag=0;
-  setTimer(ActTCU, 50);
 }
