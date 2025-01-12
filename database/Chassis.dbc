@@ -37,15 +37,15 @@ BU_: BCW FCA GateWay SCC MDPS
 
 
 BO_ 571 GW_BCM_Side_Road_State: 1 GateWay
- SG_ Side_Road_State : 0|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ Side_Road_State : 0|1@1+ (1,0) [0|1] ""  SCC
 
 BO_ 570 GW_BCM_Rear_Vehicle_State: 1 GateWay
- SG_ Rear_Vehicle_state : 0|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ Rear_Vehicle_state : 0|1@1+ (1,0) [0|1] ""  SCC
 
 BO_ 537 SCC_CmdSta: 1 SCC
- SG_ SCC_WaitSta : 2|1@1+ (1,0) [0|1] "" Vector__XXX
- SG_ SCC_StopStaSig : 1|1@1+ (1,0) [0|1] "" Vector__XXX
- SG_ SCC_LaneCmd : 0|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ SCC_WaitSta : 2|1@1+ (1,0) [0|1] ""  GateWay
+ SG_ SCC_StopStaSig : 1|1@1+ (1,0) [0|1] ""  GateWay
+ SG_ SCC_LaneCmd : 0|1@1+ (1,0) [0|1] ""  GateWay
 
 BO_ 50 VCU_Emergency_Act: 1 GateWay
  SG_ Emergency_Act : 0|1@1+ (1,0) [0|1] ""  SCC

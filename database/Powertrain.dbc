@@ -36,8 +36,8 @@ BS_:
 BU_: GateWay EMS EPB TCU
 
 
-BO_ 320 EMS_WheelSpd: 1 Vector__XXX
- SG_ WheelSpd : 0|8@1+ (1,0) [0|255] "km/h" Vector__XXX
+BO_ 320 EMS_WheelSpd: 1 EMS
+ SG_ WheelSpd : 0|8@1+ (1,0) [0|255] "km/h"  GateWay
 
 BO_ 281 GW_SSC_CmdSta: 1 GateWay
  SG_ SCC_WaitSta : 2|1@1+ (1,0) [0|1] "" Vector__XXX
@@ -66,7 +66,7 @@ BO_ 67 GW_NM_TCU: 1 GateWay
  SG_ NmSleepCmd_TCU : 0|1@1+ (1,0) [0|1] ""  TCU
 
 BO_ 49 VCU_IGN1: 1 GateWay
- SG_ IGN_State : 0|1@1+ (1,0) [0|1] ""  TCU
+ SG_ IGN_State : 0|1@1+ (1,0) [0|1] ""  EMS,TCU
 
 BO_ 278 GW_SCC_Speed_Control: 5 GateWay
  SG_ SCC_ACCEL_REF : 24|11@1+ (0.01,-10.23) [-10.23|10.24] "m/s^2"  TCU,EMS
