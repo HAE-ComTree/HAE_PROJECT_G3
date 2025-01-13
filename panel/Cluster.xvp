@@ -1,6 +1,47 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Panel Type="Vector.CANalyzer.Panels.PanelSerializer, Vector.CANalyzer.Panels.Serializer, Version=18.0.150.0, Culture=neutral, PublicKeyToken=null">
   <Object Type="Vector.CANalyzer.Panels.Runtime.Panel, Vector.CANalyzer.Panels.Common, Version=18.0.150.0, Culture=neutral, PublicKeyToken=null" Name="Panel" ControlName="Cluster">
+    <Object Type="Vector.CANalyzer.Panels.Design.SwitchControl, Vector.CANalyzer.Panels.CommonControls, Version=18.0.150.0, Culture=neutral, PublicKeyToken=null" Name="X90323a4de596de4e70e9b06e1e57f4634060" ControlName="Switch / Indicator 6">
+      <Property Name="Name">X90323a4de596de4e70e9b06e1e57f4634060</Property>
+      <Property Name="Size">53, 53</Property>
+      <Property Name="Location">535, 212</Property>
+      <Property Name="SymbolConfiguration">8;16;IVI;;;sv_EDSS_state;1;;;-1;;;Value;;;0</Property>
+      <Property Name="ImageFile">..\image\EDSS.png</Property>
+      <Property Name="IsProportional">False</Property>
+      <Property Name="TabIndex">7</Property>
+      <Property Name="Epsilon">0</Property>
+      <Property Name="Increment">1</Property>
+      <Property Name="StartValue">0</Property>
+      <Property Name="SwitchValuesVTXml">&lt;Version&gt;2&lt;/Version&gt;&lt;Count&gt;2&lt;/Count&gt;&lt;RxValue&gt;0&lt;/RxValue&gt;&lt;LowerUpper&gt;Lower&lt;/LowerUpper&gt;&lt;TxValue&gt;0&lt;/TxValue&gt;&lt;RxValue&gt;1&lt;/RxValue&gt;&lt;LowerUpper&gt;Lower&lt;/LowerUpper&gt;&lt;TxValue&gt;1&lt;/TxValue&gt;</Property>
+      <Property Name="SwitchValuesVT">1;2;0/Lower/0;1/Lower/1</Property>
+      <Property Name="SwitchValues">1;2;0;1</Property>
+      <Property Name="SwitchValuesRx">1;2;0;1</Property>
+    </Object>
+    <Object Type="Vector.CANalyzer.Panels.Design.StaticTextControl, Vector.CANalyzer.Panels.CommonControls, Version=18.0.150.0, Culture=neutral, PublicKeyToken=null" Name="X6f7350c7ebdc2e4e02e83ace71c63e37403b" ControlName="cancel_message">
+      <Property Name="Name">X6f7350c7ebdc2e4e02e83ace71c63e37403b</Property>
+      <Property Name="Size">279, 21</Property>
+      <Property Name="Location">256, 246</Property>
+      <Property Name="IsVisibleByLoad">False</Property>
+      <Property Name="ForeColor">Pink</Property>
+      <Property Name="Font">Microsoft Sans Serif, 12pt, style=Bold</Property>
+      <Property Name="Text">EDSS 시스템 가동이 취소되었습니다.</Property>
+    </Object>
+    <Object Type="Vector.CANalyzer.Panels.Design.SwitchControl, Vector.CANalyzer.Panels.CommonControls, Version=18.0.150.0, Culture=neutral, PublicKeyToken=null" Name="X2d8d07b2e65dbe4f4cea85ee4dfb31156699" ControlName="Switch / Indicator 5">
+      <Property Name="Name">X2d8d07b2e65dbe4f4cea85ee4dfb31156699</Property>
+      <Property Name="Size">31, 40</Property>
+      <Property Name="Location">223, 103</Property>
+      <Property Name="SymbolConfiguration">8;16;IVI;;;sv_gear;1;;;-1;;;Value;;;0</Property>
+      <Property Name="ImageFile">..\image\gear.png</Property>
+      <Property Name="TabIndex">6</Property>
+      <Property Name="Epsilon">0</Property>
+      <Property Name="Increment">1</Property>
+      <Property Name="StartValue">0</Property>
+      <Property Name="StateCnt">6</Property>
+      <Property Name="SwitchValuesVTXml">&lt;Version&gt;2&lt;/Version&gt;&lt;Count&gt;6&lt;/Count&gt;&lt;RxValue&gt;0&lt;/RxValue&gt;&lt;LowerUpper&gt;Lower&lt;/LowerUpper&gt;&lt;TxValue&gt;0&lt;/TxValue&gt;&lt;RxValue&gt;1&lt;/RxValue&gt;&lt;LowerUpper&gt;Lower&lt;/LowerUpper&gt;&lt;TxValue&gt;1&lt;/TxValue&gt;&lt;RxValue&gt;2&lt;/RxValue&gt;&lt;LowerUpper&gt;Lower&lt;/LowerUpper&gt;&lt;TxValue&gt;2&lt;/TxValue&gt;&lt;RxValue&gt;3&lt;/RxValue&gt;&lt;LowerUpper&gt;Lower&lt;/LowerUpper&gt;&lt;TxValue&gt;3&lt;/TxValue&gt;&lt;RxValue&gt;4&lt;/RxValue&gt;&lt;LowerUpper&gt;Lower&lt;/LowerUpper&gt;&lt;TxValue&gt;4&lt;/TxValue&gt;&lt;RxValue&gt;5&lt;/RxValue&gt;&lt;LowerUpper&gt;Lower&lt;/LowerUpper&gt;&lt;TxValue&gt;5&lt;/TxValue&gt;</Property>
+      <Property Name="SwitchValuesVT">1;6;0/Lower/0;1/Lower/1;2/Lower/2;3/Lower/3;4/Lower/4;5/Lower/5</Property>
+      <Property Name="SwitchValues">1;6;0;1;2;3;4;5</Property>
+      <Property Name="SwitchValuesRx">1;6;0;1;2;3;4;5</Property>
+    </Object>
     <Object Type="Vector.CANalyzer.Panels.Design.StaticTextControl, Vector.CANalyzer.Panels.CommonControls, Version=18.0.150.0, Culture=neutral, PublicKeyToken=null" Name="Xee47c1c7ee463e4a48eb48be764cc8d571b9" ControlName="count_5s_message">
       <Property Name="Name">Xee47c1c7ee463e4a48eb48be764cc8d571b9</Property>
       <Property Name="Size">251, 21</Property>
@@ -71,7 +112,7 @@
     <Object Type="Vector.CANalyzer.Panels.Design.SwitchControl, Vector.CANalyzer.Panels.CommonControls, Version=18.0.150.0, Culture=neutral, PublicKeyToken=null" Name="X9992abdbe183fe4816eaa7feae797ad30f6c" ControlName="Switch / Indicator 1">
       <Property Name="Name">X9992abdbe183fe4816eaa7feae797ad30f6c</Property>
       <Property Name="Size">255, 37</Property>
-      <Property Name="Location">267, 201</Property>
+      <Property Name="Location">267, 212</Property>
       <Property Name="SymbolConfiguration">8;16;DMS;;;sv_warning_message;1;;;-1;;;Value;;;0</Property>
       <Property Name="ImageFile">..\image\warning_message.png</Property>
       <Property Name="IsProportional">False</Property>
@@ -89,8 +130,8 @@
     <Object Type="Vector.CANalyzer.Panels.Design.CanvasControl, Vector.CANalyzer.Panels.CommonControls, Version=18.0.150.0, Culture=neutral, PublicKeyToken=null" Name="X7ec7a14de250de48f7e9083ead24b815c0f8" ControlName="Canvas 1">
       <Object Type="Vector.CANalyzer.Panels.Design.SwitchControl, Vector.CANalyzer.Panels.CommonControls, Version=18.0.150.0, Culture=neutral, PublicKeyToken=null" Name="X0fee366dedd7de44d8ea31ee4fc2d3ffc6ad" ControlName="DMS_Driver_State">
         <Property Name="Name">X0fee366dedd7de44d8ea31ee4fc2d3ffc6ad</Property>
-        <Property Name="Size">255, 82</Property>
-        <Property Name="Location">5, 5</Property>
+        <Property Name="Size">255, 92</Property>
+        <Property Name="Location">0, 0</Property>
         <Property Name="SymbolConfiguration">8;16;DMS;;;sv_DMS_CautionLv;1;;;-1;;;Value;;;0</Property>
         <Property Name="ImageFile">..\image\driver_state.png</Property>
         <Property Name="IsProportional">False</Property>
@@ -99,11 +140,11 @@
         <Property Name="Epsilon">0</Property>
         <Property Name="Increment">1</Property>
         <Property Name="StartValue">0</Property>
-        <Property Name="StateCnt">5</Property>
-        <Property Name="SwitchValuesVTXml">&lt;Version&gt;2&lt;/Version&gt;&lt;Count&gt;5&lt;/Count&gt;&lt;RxValue&gt;0&lt;/RxValue&gt;&lt;LowerUpper&gt;Lower&lt;/LowerUpper&gt;&lt;TxValue&gt;0&lt;/TxValue&gt;&lt;RxValue&gt;1&lt;/RxValue&gt;&lt;LowerUpper&gt;Lower&lt;/LowerUpper&gt;&lt;TxValue&gt;1&lt;/TxValue&gt;&lt;RxValue&gt;2&lt;/RxValue&gt;&lt;LowerUpper&gt;Lower&lt;/LowerUpper&gt;&lt;TxValue&gt;2&lt;/TxValue&gt;&lt;RxValue&gt;3&lt;/RxValue&gt;&lt;LowerUpper&gt;Lower&lt;/LowerUpper&gt;&lt;TxValue&gt;3&lt;/TxValue&gt;&lt;RxValue&gt;4&lt;/RxValue&gt;&lt;LowerUpper&gt;Lower&lt;/LowerUpper&gt;&lt;TxValue&gt;4&lt;/TxValue&gt;</Property>
-        <Property Name="SwitchValuesVT">1;5;0/Lower/0;1/Lower/1;2/Lower/2;3/Lower/3;4/Lower/4</Property>
-        <Property Name="SwitchValues">1;5;0;1;2;3;4</Property>
-        <Property Name="SwitchValuesRx">1;5;0;1;2;3;4</Property>
+        <Property Name="StateCnt">6</Property>
+        <Property Name="SwitchValuesVTXml">&lt;Version&gt;2&lt;/Version&gt;&lt;Count&gt;6&lt;/Count&gt;&lt;RxValue&gt;0&lt;/RxValue&gt;&lt;LowerUpper&gt;Lower&lt;/LowerUpper&gt;&lt;TxValue&gt;0&lt;/TxValue&gt;&lt;RxValue&gt;1&lt;/RxValue&gt;&lt;LowerUpper&gt;Lower&lt;/LowerUpper&gt;&lt;TxValue&gt;1&lt;/TxValue&gt;&lt;RxValue&gt;2&lt;/RxValue&gt;&lt;LowerUpper&gt;Lower&lt;/LowerUpper&gt;&lt;TxValue&gt;2&lt;/TxValue&gt;&lt;RxValue&gt;3&lt;/RxValue&gt;&lt;LowerUpper&gt;Lower&lt;/LowerUpper&gt;&lt;TxValue&gt;3&lt;/TxValue&gt;&lt;RxValue&gt;4&lt;/RxValue&gt;&lt;LowerUpper&gt;Lower&lt;/LowerUpper&gt;&lt;TxValue&gt;4&lt;/TxValue&gt;&lt;RxValue&gt;5&lt;/RxValue&gt;&lt;LowerUpper&gt;Lower&lt;/LowerUpper&gt;&lt;TxValue&gt;5&lt;/TxValue&gt;</Property>
+        <Property Name="SwitchValuesVT">1;6;0/Lower/0;1/Lower/1;2/Lower/2;3/Lower/3;4/Lower/4;5/Lower/5</Property>
+        <Property Name="SwitchValues">1;6;0;1;2;3;4;5</Property>
+        <Property Name="SwitchValuesRx">1;6;0;1;2;3;4;5</Property>
       </Object>
       <Property Name="Name">X7ec7a14de250de48f7e9083ead24b815c0f8</Property>
       <Property Name="Size">255, 92</Property>
@@ -114,7 +155,7 @@
     <Object Type="Vector.CANalyzer.Panels.Design.AnalogGaugeControl, Vector.CANalyzer.Panels.AnalogGauge, Version=18.0.150.0, Culture=neutral, PublicKeyToken=null" Name="X88d8ec55efa15e483ceb5e8e32f948b9b456" ControlName="RPMGauge">
       <Property Name="Name">X88d8ec55efa15e483ceb5e8e32f948b9b456</Property>
       <Property Name="Size">262, 221</Property>
-      <Property Name="Location">-14, 55</Property>
+      <Property Name="Location">-25, 55</Property>
       <Property Name="ScaleMin">0</Property>
       <Property Name="ScaleMax">8000</Property>
       <Property Name="LowerRangeLimit">2000</Property>
@@ -124,7 +165,7 @@
       <Property Name="BackgroundColor">Black</Property>
       <Property Name="ArrowColor">White</Property>
       <Property Name="CenterColor">White</Property>
-      <Property Name="LegendText">km/h</Property>
+      <Property Name="LegendText"></Property>
       <Property Name="LegendTextColor">White</Property>
       <Property Name="LegendTextFont">Arial, 7.8pt</Property>
       <Property Name="LegendColor">White</Property>
@@ -136,7 +177,7 @@
       <Property Name="IsFrame">False</Property>
       <Property Name="IsMargin">False</Property>
       <Property Name="ScaleMargin">0</Property>
-      <Property Name="SymbolConfiguration">8;2;body;BCM;BCM_Wheel_Speed_FL;Wheel_Speed_FL;1;CAN;;-1;;;Value;;;0</Property>
+      <Property Name="SymbolConfiguration">8;16;IVI;;;sv_RPM;1;;;-1;;;Value;;;0</Property>
       <Property Name="CriticalProps" Member="AAEAAAD/////AQAAAAAAAAAEAQAAAC9TeXN0ZW0uUmVmbGVjdGlvbi5NZW1iZXJJbmZvU2VyaWFsaXphdGlvbkhvbGRlcgcAAAAETmFtZQxBc3NlbWJseU5hbWUJQ2xhc3NOYW1lCVNpZ25hdHVyZQpTaWduYXR1cmUyCk1lbWJlclR5cGUQR2VuZXJpY0FyZ3VtZW50cwEBAQEBAAMIDVN5c3RlbS5UeXBlW10GAgAAAAUuY3RvcgYDAAAAXFZlY3Rvci5DQU5hbHl6ZXIuUGFuZWxzLkFuYWxvZ0dhdWdlLCBWZXJzaW9uPTE3LjMuOTEuMCwgQ3VsdHVyZT1uZXV0cmFsLCBQdWJsaWNLZXlUb2tlbj1udWxsBgQAAAA2VmVjdG9yLkNBTmFseXplci5QYW5lbHMuRGVzaWduLkdhdWdlQ3JpdGljYWxQcm9wZXJ0aWVzBgUAAAAyVm9pZCAuY3RvcihEb3VibGUsIERvdWJsZSwgRG91YmxlLCBEb3VibGUsIERvdWJsZSkGBgAAAFAuY3RvcihTeXN0ZW0uRG91YmxlLCBTeXN0ZW0uRG91YmxlLCBTeXN0ZW0uRG91YmxlLCBTeXN0ZW0uRG91YmxlLCBTeXN0ZW0uRG91YmxlKQEAAAAKCw==">
         <Argument>0</Argument>
         <Argument>8000</Argument>
@@ -170,7 +211,7 @@
       <Property Name="IsFrame">False</Property>
       <Property Name="IsMargin">False</Property>
       <Property Name="ScaleMargin">0</Property>
-      <Property Name="SymbolConfiguration">8;2;body;BCM;BCM_Wheel_Speed_FL;Wheel_Speed_FL;1;CAN;;-1;;;Value;;;0</Property>
+      <Property Name="SymbolConfiguration">8;2;body;Gateway;GW_EMS_WheelSpd;WheelSpd;1;CAN;;-1;;;Value;;;0</Property>
       <Property Name="CriticalProps" Member="AAEAAAD/////AQAAAAAAAAAEAQAAAC9TeXN0ZW0uUmVmbGVjdGlvbi5NZW1iZXJJbmZvU2VyaWFsaXphdGlvbkhvbGRlcgcAAAAETmFtZQxBc3NlbWJseU5hbWUJQ2xhc3NOYW1lCVNpZ25hdHVyZQpTaWduYXR1cmUyCk1lbWJlclR5cGUQR2VuZXJpY0FyZ3VtZW50cwEBAQEBAAMIDVN5c3RlbS5UeXBlW10GAgAAAAUuY3RvcgYDAAAAXFZlY3Rvci5DQU5hbHl6ZXIuUGFuZWxzLkFuYWxvZ0dhdWdlLCBWZXJzaW9uPTE3LjMuOTEuMCwgQ3VsdHVyZT1uZXV0cmFsLCBQdWJsaWNLZXlUb2tlbj1udWxsBgQAAAA2VmVjdG9yLkNBTmFseXplci5QYW5lbHMuRGVzaWduLkdhdWdlQ3JpdGljYWxQcm9wZXJ0aWVzBgUAAAAyVm9pZCAuY3RvcihEb3VibGUsIERvdWJsZSwgRG91YmxlLCBEb3VibGUsIERvdWJsZSkGBgAAAFAuY3RvcihTeXN0ZW0uRG91YmxlLCBTeXN0ZW0uRG91YmxlLCBTeXN0ZW0uRG91YmxlLCBTeXN0ZW0uRG91YmxlLCBTeXN0ZW0uRG91YmxlKQEAAAAKCw==">
         <Argument>0</Argument>
         <Argument>255</Argument>
