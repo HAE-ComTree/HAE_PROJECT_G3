@@ -37,12 +37,12 @@ variables
 
 on message GW_BCM_Rear_Vehicle_State
 {
-  RearDetected = this.Rear_Vehicle_state;
+  RearDetected = this.Rear_Vehicle_state.phys;
 }
 
-on message BCM_Side_Road_State
+on message GW_BCM_Side_Road_State
 {
-  SideRoadDetected = this.Side_Road_State;
+  SideRoadDetected = this.Side_Road_State.phys;
 }
 
 void WaitingStaFlg()
@@ -129,8 +129,8 @@ on start
     StopSta = 0;
     Systemsta = 0;
     
-  setTimerCyclic(MonitorTimer,0,50);
-  setTimerCyclic(SCCMessageTimer, 0,50);
+  setTimerCyclic(MonitorTimer,0,10);
+  setTimerCyclic(SCCMessageTimer, 0,10);
   
 }
 
