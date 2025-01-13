@@ -102,7 +102,7 @@ BO_ 535 FCA_Data: 1 FCA
 BO_ 534 SCC_Speed_Control: 6 SCC
  SG_ SCC_VS_target : 40|8@1+ (1,0) [0|254] "km/h"  GateWay
  SG_ SCC_VS : 32|8@1+ (1,0) [0|254] "km/h"  GateWay
- SG_ CF_SCC_Gear_State : 24|4@1+ (1,0) [0|15] ""  GateWay
+ SG_ CF_SCC_Gear_State : 24|3@1+ (1,0) [0|7] ""  GateWay
  SG_ CF_SCC_State : 0|1@1+ (1,0) [0|1] ""  GateWay
  SG_ CF_SCC_BreakACT : 8|1@1+ (1,0) [0|1] ""  GateWay
  SG_ SCC_State_Sig : 16|2@1+ (1,0) [0|4] ""  GateWay

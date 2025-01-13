@@ -36,17 +36,20 @@ BS_:
 BU_: Gateway IVI DMS BCM
 
 
-<<<<<<< HEAD
-BO_ 793 GW_SSC_CmdSta: 1 Gateway
- SG_ SCC_LaneCmd : 1|1@1+ (1,0) [0|1] "" Vector__XXX
- SG_ SCC_WaitSta : 0|1@1+ (1,0) [0|0] "" Vector__XXX
- SG_ SCC_StopStaSig : 2|1@1+ (1,0) [0|1] ""  BCM
-=======
+BO_ 3221225472 VECTOR__INDEPENDENT_SIG_MSG: 0 Vector__XXX
+ SG_ SCC_ACCEL_REF : 0|11@1+ (1,0) [0|2047] "" Vector__XXX
+
+BO_ 999 TMU_Azi_Info: 2 Gateway
+ SG_ Azimuth : 0|16@1- (1,0) [-32768|32767] ""  IVI
+
+BO_ 998 TMU_LatLong_Info: 8 Gateway
+ SG_ Longitude : 32|32@1- (1,0) [-2147483648|2147483647] ""  IVI
+ SG_ Latitude : 0|32@1- (1,0) [-2147483648|2147483647] ""  IVI
+
 BO_ 793 GW_SSC_CmdSta: 3 Gateway
  SG_ SCC_LaneCmd : 0|1@1+ (1,0) [0|1] "" Vector__XXX
  SG_ SCC_WaitSta : 16|1@1+ (1,0) [0|0] "" Vector__XXX
  SG_ SCC_StopStaSig : 8|1@1+ (1,0) [0|1] ""  BCM
->>>>>>> body_VCU
 
 BO_ 832 GW_EMS_WheelSpd: 1 Gateway
  SG_ WheelSpd : 0|8@1+ (1,0) [0|255] "km/h"  BCM
@@ -67,15 +70,14 @@ BO_ 826 BCM_Rear_Vehicle_State: 1 BCM
 BO_ 801 BCM_5s: 1 BCM
  SG_ Count_5s : 0|1@1+ (1,0) [0|1] ""  Gateway
 
-BO_ 792 GW_BCW_Data: 2 Gateway
+BO_ 792 GW_BCW_Data: 1 Gateway
  SG_ BCWState : 2|2@1+ (1,0) [0|3] ""  IVI
  SG_ BCW_LR : 0|2@1+ (1,0) [0|3] ""  IVI
 
 BO_ 791 GW_FCA_Data: 1 Gateway
  SG_ FCAState : 0|2@1+ (1,0) [0|3] ""  IVI
 
-BO_ 790 GW_SCC_Speed_Control: 5 Gateway
- SG_ SCC_ACCEL_REF : 24|11@1+ (1,0) [0|2047] ""  IVI
+BO_ 790 GW_SCC_Speed_Control: 3 Gateway
  SG_ SCC_VS_Target : 16|8@1+ (1,0) [0|255] ""  IVI
  SG_ SCC_VS : 8|8@1+ (1,0) [0|255] ""  IVI
  SG_ CF_SCC_Gear_State : 2|4@1+ (1,0) [0|15] ""  IVI
@@ -88,12 +90,8 @@ BO_ 788 GW_SCC_LineData: 2 Gateway
  SG_ LKAS_RHWarning : 1|2@1+ (1,0) [0|3] ""  IVI
  SG_ SCC_LKAS_ACT : 0|1@1+ (1,0) [0|1] ""  IVI
 
-BO_ 771 GW_EMS_Engine_Data: 3 Gateway
-<<<<<<< HEAD
- SG_ EMS_RPM_Data : 8|16@1+ (0.25,0) [0|8100] ""  IVI
-=======
- SG_ EMS_RPM_Data : 8|16@1+ (0.25,0) [0|8100] "rpm"  IVI
->>>>>>> body_VCU
+BO_ 771 GW_EMS_Engine_Data: 2 Gateway
+ SG_ EMS_RPM_Data : 8|8@1+ (0.25,0) [0|8100] "rpm"  IVI
  SG_ EMS_Tq_Data : 2|6@1+ (1,0) [0|63] ""  IVI
  SG_ EMS_Brake_ACT : 1|1@1+ (1,0) [0|1] ""  IVI
  SG_ EMS_Accel_ACT : 0|1@1+ (1,0) [0|1] ""  IVI
@@ -202,6 +200,7 @@ BO_ 800 BCM_EDSS_SW_STATE: 1 BCM
 
 
 
+CM_ BO_ 3221225472 "This is a message for not used signals, created by Vector CANdb++ DBC OLE DB Provider.";
 BA_DEF_  "MultiplexExtEnabled" ENUM  "No","Yes";
 BA_DEF_  "BusType" STRING ;
 BA_DEF_DEF_  "MultiplexExtEnabled" "No";

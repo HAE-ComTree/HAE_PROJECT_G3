@@ -44,9 +44,6 @@ BO_ 281 GW_SSC_CmdSta: 3 GateWay
  SG_ SCC_StopStaSig : 8|1@1+ (1,0) [0|1] ""  EMS
  SG_ SCC_LanrCmd : 0|1@1+ (1,0) [0|1] ""  EMS
 
-BO_ 304 GW_BCM_WheelSpd_FL: 1 GateWay
- SG_ WheelSpd_FL : 0|8@1+ (1,0) [0|255] "km/h" Vector__XXX
-
 BO_ 85 EMS_NM_Flag: 1 EMS
  SG_ EMS_Flag : 0|1@1+ (1,1) [0|1] ""  GateWay
 
@@ -87,7 +84,7 @@ BO_ 258 EPB_Press_Data: 3 EPB
  SG_ EPB_CylinderPress : 8|12@1+ (0.1,0) [0|409.5] "Bar"  GateWay
  SG_ EPB_CylinderState : 0|1@1+ (1,0) [0|1] ""  GateWay
 
-BO_ 257 EPB_State_Data: 2 EPB
+BO_ 257 EPB_State_Data: 1 EPB
  SG_ EPB_ACT : 0|1@1+ (1,0) [0|1] ""  GateWay
 
 BO_ 256 TCU_Gear_Data: 3 TCU
