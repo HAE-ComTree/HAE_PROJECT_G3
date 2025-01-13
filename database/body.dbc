@@ -39,12 +39,12 @@ BU_: Gateway IVI DMS BCM
 BO_ 3221225472 VECTOR__INDEPENDENT_SIG_MSG: 0 Vector__XXX
  SG_ SCC_ACCEL_REF : 0|11@1+ (1,0) [0|2047] "" Vector__XXX
 
-BO_ 999 TMU_Azi_Info: 2 Vector__XXX
- SG_ Azimuth : 0|16@1- (1,0) [-32768|32767] "" Vector__XXX
+BO_ 999 TMU_Azi_Info: 2 Gateway
+ SG_ Azimuth : 0|16@1- (1,0) [-32768|32767] ""  IVI
 
-BO_ 998 TMU_LatLong_Info: 8 Vector__XXX
- SG_ Longitude : 32|32@1- (1,0) [-2147483648|2147483647] "" Vector__XXX
- SG_ Latitude : 0|32@1- (1,0) [-2147483648|2147483647] "" Vector__XXX
+BO_ 998 TMU_LatLong_Info: 8 Gateway
+ SG_ Longitude : 32|32@1- (1,0) [-2147483648|2147483647] ""  IVI
+ SG_ Latitude : 0|32@1- (1,0) [-2147483648|2147483647] ""  IVI
 
 BO_ 793 GW_SSC_CmdSta: 3 Gateway
  SG_ SCC_LaneCmd : 0|1@1+ (1,0) [0|1] "" Vector__XXX
