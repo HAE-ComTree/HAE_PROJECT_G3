@@ -92,12 +92,12 @@ on start
 on sysvar sysvar::DMS::sv_DMS_CautionLv
 {
     Driver_State = @this;
-    if (@sysvar::DMS::sv_DMS_CautionLv < 5) {
     b_DMS_Driver_State.DMS_CautionLv.phys = Driver_State;
-    }
+  
+    
 }
 
-on message DMS_Driver_State { // 경고 표시
+on message DMS_Driver_State {
 
     if (@sysvar::DMS::sv_DMS_CautionLv == 2) {
         @sysvar::DMS::sv_warning_message = 1; //경고 메세지

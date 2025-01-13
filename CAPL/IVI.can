@@ -11,11 +11,6 @@ variables
     int Wakeup = 0;
   
     msTimer IVIMessageTimer;      // 송신용 타이머
-    
-    int call_flag = 0;
-    
-    //주변 알림
-    msTimer surrounding;
 }
 
 on timer IVIMessageTimer
@@ -87,9 +82,6 @@ on start
     b_IVI_EDSS_CSW.IVI_EDSS_CANCEL_SW.phys = 0; EDSS_CSW = 0; 
   
     setTimerCyclic(IVIMessageTimer, 0, 100); // 100ms 주기로 송신
-    setTimerCyclic(surrounding, 0, 100); //주변 차량
-  
-    call_flag = 0;
 }
 
 /* ----------------------------------------------- */
@@ -100,65 +92,19 @@ on sysvar sysvar::IVI::sv_IVI_EDSS_CANCEL_SW
     b_IVI_EDSS_CSW.IVI_EDSS_CANCEL_SW.phys = EDSS_CSW; 
 }
 
-on message GW_TCU_Gear_Data {
-  
-  if (this.TCU_GearType.phys == 0) {
-    @sysvar::IVI::sv_gear = 0;
-  }
-  else if (this.TCU_GearType.phys == 1) {
-    @sysvar::IVI::sv_gear = 1;
-  }
-  else if (this.TCU_GearType.phys == 2) {
-    @sysvar::IVI::sv_gear = 2;
-  }
-  else if (this.TCU_GearType.phys == 3) {
-    @sysvar::IVI::sv_gear = 3;
-  }
-  else if (this.TCU_GearType.phys == 4) {
-    @sysvar::IVI::sv_gear = 4;
-  }
-  else if (this.TCU_GearType.phys == 5) {
-    @sysvar::IVI::sv_gear = 5;
-  }
-}
-
 on message VCU_IVI_Msg {
   
-  if (this.EDSS_Act.phys == 1) {
-    
-    @sysvar::IVI::sv_EDSS_state = 1;
-    
-    if (this.ECall_Req.phys == 0) {
-      @sysvar::IVI::sv_stop_message = 0;
-      setControlVisibility("stop_situation","stop_message",1); 
-    } 
-    else if (this.ECall_Req.phys == 1) {
-      @sysvar::IVI::sv_stop_message = 1;  //정차가 완료되었습니다.
-    } 
-  }
-  else if (this.EDSS_Act.phys == 0 && this.ECall_Req.phys == 1) {
-    @sysvar::IVI::sv_stop_message = 2;   //신고가 접수되었습니다.
-  }
-}
-
-on message Sever_119_Call {
-  if (this.Call_119.phys == 1) {
-    @sysvar::DMS::sv_DMS_CautionLv = 5;
-  }
-}
-
-on message GW_EMS_Engine_Data {
- @sysvar::IVI::sv_RPM =  ((this.EMS_RPM_Data.phys) * 8000) / 255;
-}
-
-on timer surrounding
-{
-  //주변 차량 알림
-  if ($VCU_IVI_Msg::EDSS_Act==0 && $VCU_IVI_Msg::ECall_Req==1) {
-      if (@sysvar::BCM::moving_car == 20) {
-          @sysvar::BCM::moving_car++;
-      } else if (@sysvar::BCM::moving_car == 21) {
-          @sysvar::BCM::moving_car--;
-      } 
+  if (this.EDSS_Act.phys == 1 && this.ECall_Req.phys == 0) {
+    @sysvar::IVI::sv_stop_message = 0;
+    setControlVisibility("stop_situation","stop_message",1); 
+  } 
+  
+  else if (this.EDSS_Act.phys == 1 && this.ECall_Req.phys == 1) {
+    @sysvar::IVI::sv_stop_message = 1;
+    setControlVisibility("stop_situation","stop_message",1); 
+  } 
+  
+  else {
+    setControlVisibility("stop_situation","stop_message",0); 
   }
 }
