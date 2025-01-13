@@ -36,13 +36,13 @@ BS_:
 BU_: Gateway IVI DMS BCM
 
 
-BO_ 832 GW_EMS_WheelSpd: 1 Gateway
- SG_ WheelSpd : 0|8@1+ (1,0) [0|255] "km/h" Vector__XXX
+BO_ 793 GW_SSC_CmdSta: 1 Gateway
+ SG_ SCC_LaneCmd : 1|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ SCC_WaitSta : 0|1@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ SCC_StopStaSig : 2|1@1+ (1,0) [0|1] ""  BCM
 
-BO_ 999 SSC_CmdSta: 1 Gateway
- SG_ SCC_WaitSta : 2|1@1+ (1,0) [0|0] ""  BCM
- SG_ SCC_StopStaSig : 1|1@1+ (1,0) [0|1] ""  BCM
- SG_ SCC_LaneCmd : 0|1@1+ (1,0) [0|1] ""  BCM
+BO_ 832 GW_EMS_WheelSpd: 1 Gateway
+ SG_ WheelSpd : 0|8@1+ (1,0) [0|255] "km/h"  BCM
 
 BO_ 997 Sever_119_Call: 1 Gateway
  SG_ Call_119 : 0|1@1+ (1,0) [0|1] ""  IVI
@@ -81,8 +81,8 @@ BO_ 788 GW_SCC_LineData: 2 Gateway
  SG_ LKAS_RHWarning : 1|2@1+ (1,0) [0|3] ""  IVI
  SG_ SCC_LKAS_ACT : 0|1@1+ (1,0) [0|1] ""  IVI
 
-BO_ 771 GW_EMS_Engine_Data: 2 Gateway
- SG_ EMS_RPM_Data : 8|8@1+ (1,0) [0|255] ""  IVI
+BO_ 771 GW_EMS_Engine_Data: 3 Gateway
+ SG_ EMS_RPM_Data : 8|16@1+ (0.25,0) [0|8100] ""  IVI
  SG_ EMS_Tq_Data : 2|6@1+ (1,0) [0|63] ""  IVI
  SG_ EMS_Brake_ACT : 1|1@1+ (1,0) [0|1] ""  IVI
  SG_ EMS_Accel_ACT : 0|1@1+ (1,0) [0|1] ""  IVI
@@ -154,7 +154,7 @@ BO_ 65 GW_NM_DMS: 1 Gateway
 BO_ 64 GW_NM_BCM: 1 Gateway
  SG_ NmSleepCmd_BCM : 0|1@1+ (1,0) [0|1] ""  BCM
 
-BO_ 48 VCU_IGN1: 1 Gateway
+BO_ 49 VCU_IGN1: 1 Gateway
  SG_ IGN_State : 0|1@1+ (1,0) [0|1] ""  IVI,DMS,BCM
 
 BO_ 825 BCM_Steering_Pos: 1 BCM

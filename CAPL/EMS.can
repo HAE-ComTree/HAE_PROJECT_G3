@@ -6,18 +6,18 @@ includes
 }
 
 variables {
-  float gearratio[6] = {0, 4.639, 2.826, 1.841, 1.386, 1.000};  //기어비
+  float gearratio[6]= {0, 4.639, 2.826, 1.841, 1.386, 1.000};  //기어비
   int currGear = 1; //현재 기어
   
-  const float finalDriverRatio = 3.909;
+  const float finalDriverRatio = 4.5;
   const int tireWidth = 240;
   const int aspectRatio = 50;
   const int inchOfWheel = 18;
   
-  float rpm = 0;
+  float rpm = 1;
   int gearIndex = 1;
   
-  message EMS_WheelSpd P_EMS_WheelSpd;
+  message CAN1::EMS_WheelSpd P_EMS_WheelSpd;
   message CAN1::EMS_Engine_Data engMsg;
   message CAN1::EMS_NM_Flag P_EMS_NM_Flag;
   message CAN1::EMS_Engine_Data P_EMS_Engine_Data;
@@ -42,11 +42,12 @@ variables {
   msTimer StopDcreaseTimer; 
   msTimer StartIncreaseTimer; 
   msTimer LaneChangeDecreaseTimer;
-  msTimer EMS_CAL; // 10ms timer;
+  msTimer EMS_CAL; // 10ms timer; 
   
   /*-----------------------------------------------------------------------------*/
 
 }
+
 
 on message VCU_IGN1
 {
@@ -89,24 +90,19 @@ on timer StopDcreaseTimer
 {
   if(IGN1 == 1 && StopFlag == 1)
   {
-    if (WheelSpd >= 70)
-    {
         WheelSpd -= steps;
         if (WheelSpd <= 0) 
-      {
+        {
           WheelSpd = 0;
-        $CAN1::EMS_Engine_Data::EMS_Brake_ACT = 1;
+          $CAN1::EMS_Engine_Data::EMS_Brake_ACT = 1;
           cancelTimer(StopDcreaseTimer);
         }
-    } 
-  }
+  } 
+  
 }
 
-
-
 on start {
-  $CAN1::EMS_Engine_Data::EMS_RPM_Data = 0;
-  currGear = 1;
+  $CAN1::EMS_Engine_Data::EMS_RPM_Data.phys = 0;
 
   setTimerCyclic(tmrEMS, 0, 10); // 10ms 주기로 송신
   
@@ -126,8 +122,8 @@ on start {
   /*-----------------------------------------------------------------------------*/
   
     setTimerCyclic(StartIncreaseTimer,0,100); // 100ms Increase
-    setTimerCyclic(LaneChangeDecreaseTimer,0,500); // 500ms LaneChange Decrease
-    setTimerCyclic(StopDcreaseTimer,0,250); // 250 ms Stop Decrease
+    setTimerCyclic(LaneChangeDecreaseTimer,0,100); // 500ms LaneChange Decrease
+    setTimerCyclic(StopDcreaseTimer,0,100); // 250 ms Stop Decrease
     setTimerCyclic(EMS_CAL,0,10);
 
   /*-----------------------------------------------------------------------------*/
@@ -145,22 +141,41 @@ on timer tmrEMS {
   output(P_EMS_WheelSpd);
 }
 
+on signal_update CAN1::TCU_Gear_Data::TCU_GearType {
+  if(this == 1) {
+    rpm = 2000;
+  } else if (this == 2) {
+    rpm = 1700;
+  } else if (this == 3) {
+    rpm = 1500;
+  } else if (this == 4) {
+    rpm = 1300;
+  } else if (this == 5) {
+    rpm = 1100;
+  }
+}
+
 on timer EMS_CAL
 {
-  gearIndex = currGear;
-  
   // gearIndex 안전 범위
+  /*
   if(gearIndex < 1) gearIndex=1;
   if(gearIndex > 5) gearIndex=5;
-
+  */
+  
   // rpm 계산
-  rpm = (WheelSpd*gearratio[gearIndex]*finalDriverRatio*1000000)/(3.78*tireWidth*aspectRatio+4800*inchOfWheel);
-  $CAN1::EMS_Engine_Data::EMS_RPM_Data = rpm;
+
+
+    rpm = (WheelSpd*gearratio[gearIndex]*finalDriverRatio*1000000)/(3.78*tireWidth*aspectRatio+4800*inchOfWheel);
+  if (rpm > 8000) {rpm = 8000;}
+    
+    $CAN1::EMS_Engine_Data::EMS_RPM_Data.phys = rpm*255/8000;
+
 }
 
 
 on message CAN1::TCU_Gear_Data {
-  currGear = this.TCU_GearType;
+  gearIndex = this.TCU_GearType.phys;
 }
 
 on message GW_SSC_CmdSta

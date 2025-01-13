@@ -77,11 +77,11 @@ BO_ 278 GW_SCC_Speed_Control: 5 GateWay
 BO_ 277 GW_SCC_E_stop: 1 GateWay
  SG_ CF_Estop : 0|1@1+ (1,0) [0|1] ""  TCU,EPB
 
-BO_ 259 EMS_Engine_Data: 5 EMS
- SG_ EMS_Brake_ACT : 8|1@1+ (1,0) [0|1] ""  GateWay,TCU,EPB
+BO_ 259 EMS_Engine_Data: 2 EMS
+ SG_ EMS_Brake_ACT : 1|1@1+ (1,0) [0|1] ""  GateWay,TCU,EPB
  SG_ EMS_Accel_ACT : 0|1@1+ (1,0) [0|1] ""  GateWay,TCU
- SG_ EMS_Tq_Data : 16|6@1+ (10,0) [0|630] "Nm"  GateWay,TCU
- SG_ EMS_RPM_Data : 24|16@1+ (0.25,1) [0|16383.75] "rpm"  TCU,GateWay
+ SG_ EMS_Tq_Data : 2|6@1+ (10,0) [0|630] "Nm"  GateWay,TCU
+ SG_ EMS_RPM_Data : 8|8@1+ (0.25,0) [0|255] "rpm"  TCU,GateWay
 
 BO_ 258 EPB_Press_Data: 3 EPB
  SG_ EPB_CylinderPress : 8|12@1+ (0.1,0) [0|409.5] "Bar"  GateWay
