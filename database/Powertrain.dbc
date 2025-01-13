@@ -36,6 +36,9 @@ BS_:
 BU_: GateWay EMS EPB TCU
 
 
+BO_ 288 GW_VCU_EDSS_CSW: 1 GateWay
+ SG_ EDSS_Stop : 0|1@1+ (1,0) [0|1] ""  EMS
+
 BO_ 320 EMS_WheelSpd: 1 EMS
  SG_ WheelSpd : 0|8@1+ (1,0) [0|255] "km/h"  GateWay
 
