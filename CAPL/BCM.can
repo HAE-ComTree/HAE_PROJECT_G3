@@ -89,31 +89,6 @@ on timer wheelspdIncrease
   }
 }
 
-on timer EDSS_5sCnt
-{
-  if(count5s < 5) {  
-    if (@sysvar::BCM::sv_BCM_EDSS_CANCEL_SW == 0) {
-      count5s++;
-      BCM_cnt5s = 0;
-      @sysvar::BCM::sv_Count_5s = count5s;
-      setTimer(EDSS_5sCnt, 1000);
-    }
-      
-    else if (@sysvar::BCM::sv_BCM_EDSS_CANCEL_SW == 1) {
-      setControlVisibility("Cluster","count_5s", 0);
-      setControlVisibility("Cluster","count_5s_message",0); 
-      setControlVisibility("Cluster","cancel_message", 1);
-    }
-  }
-  else
-  { 
-    BCM_cnt5s = 1;
-    count5s = 0;
-    setControlVisibility("Cluster","count_5s", 0);
-    setControlVisibility("Cluster","count_5s_message",0); 
-  }
-}
-
 
 void wheelSpdInit()
 {
@@ -247,7 +222,7 @@ on sysvar sysvar::BCM::sv_EDSS_Passenger_On_Off {
     setControlVisibility("Cluster","count_5s_message",1); 
   
     if (@this == 1) { // 값이 1일 때 타이머 시작
-        count5s = 0;
+        count5s = 5;
         BCM_cnt5s = 0;
         setTimer(EDSS_5sCnt, 1000);
     } else { // 값이 0일 때 타이머 종료
@@ -256,6 +231,31 @@ on sysvar sysvar::BCM::sv_EDSS_Passenger_On_Off {
         BCM_cnt5s = 0;
         @sysvar::BCM::sv_Count_5s = 0;
     }
+}
+
+on timer EDSS_5sCnt
+{
+  if(count5s > 0) {  
+    if (@sysvar::BCM::sv_BCM_EDSS_CANCEL_SW == 0) {
+      count5s--;
+      BCM_cnt5s = 0;
+      @sysvar::BCM::sv_Count_5s = count5s;
+      setTimer(EDSS_5sCnt, 1000);
+    }
+      
+    else if (@sysvar::BCM::sv_BCM_EDSS_CANCEL_SW == 1) {
+      setControlVisibility("Cluster","count_5s", 0);
+      setControlVisibility("Cluster","count_5s_message",0); 
+      setControlVisibility("Cluster","cancel_message", 1);
+    }
+  }
+  else
+  { 
+    BCM_cnt5s = 1;
+    count5s = 0;
+    setControlVisibility("Cluster","count_5s", 0);
+    setControlVisibility("Cluster","count_5s_message",0); 
+  }
 }
 
 on sysvar sysvar::BCM::sv_BCM_EDSS_CANCEL_SW {
@@ -315,7 +315,7 @@ on sysvar sysvar::BCM::sv_Side_Road_State {
 
 on timer moving
 { // 1. 측후방 ON, 갓길 OFF -> 차선 유지
-  if($SSC_CmdSta::SCC_LaneCmd == 0 && $SSC_CmdSta::SCC_StopStaSig ==0 && $SSC_CmdSta::SCC_WaitSta == 1) {
+  if($GW_SSC_CmdSta::SCC_WaitSta == 1) {
     if (@sysvar::BCM::moving_car<7) {
       @sysvar::BCM::moving_car++;
       flag = 1;
@@ -323,7 +323,7 @@ on timer moving
   } 
   
   // 2. 측후방 OFF, 갓길 OFF ->차선 이동
-  else if ((0<flag) && (flag<17) && $SSC_CmdSta::SCC_LaneCmd == 1 && $SSC_CmdSta::SCC_StopStaSig ==0 && $SSC_CmdSta::SCC_WaitSta == 0) {
+  else if ((0<flag) && (flag<17) && $GW_SSC_CmdSta::SCC_LaneCmd == 1) {
     if (@sysvar::BCM::moving_car<12) {
         @sysvar::BCM::moving_car++;
     }
@@ -331,14 +331,14 @@ on timer moving
   }
   
   // 3. 측후방 OFF, 갓길 ON ->차선 이동
-  else if (flag==17 && $SSC_CmdSta::SCC_LaneCmd == 1 && $SSC_CmdSta::SCC_StopStaSig ==0 && $SSC_CmdSta::SCC_WaitSta == 0) {
+  else if (flag==17 && $GW_SSC_CmdSta::SCC_LaneCmd == 1) {
     if (@sysvar::BCM::moving_car<16) {
         @sysvar::BCM::moving_car++;
         
     }
   }
   // 4. 측후방 OFF, 갓길 ON ->정차
-  else if ($SSC_CmdSta::SCC_LaneCmd == 0 && $SSC_CmdSta::SCC_StopStaSig ==1 && $SSC_CmdSta::SCC_WaitSta == 0) {
+  else if ($GW_SSC_CmdSta::SCC_StopStaSig ==1) {
     if (@sysvar::BCM::moving_car<21) {
         @sysvar::BCM::moving_car++;
     }

@@ -24,18 +24,6 @@ on timer IVIMessageTimer
   output(b_IVI_EDSS_CSW);
 }
 
-on timer surrounding
-{
-  //주변 차량 알림
-  if ($VCU_IVI_Msg::EDSS_Act==1 && $VCU_IVI_Msg::ECall_Req==1) {
-      if (@sysvar::BCM::moving_car == 20) {
-          @sysvar::BCM::moving_car++;
-      } else if (@sysvar::BCM::moving_car == 21) {
-          @sysvar::BCM::moving_car--;
-      } 
-  }
-}
-
 /* GW_NM_BCM 메시지 핸들러 */
 on message GW_NM_IVI
 {
@@ -144,22 +132,33 @@ on message VCU_IVI_Msg {
       @sysvar::IVI::sv_stop_message = 0;
       setControlVisibility("stop_situation","stop_message",1); 
     } 
-    else if (call_flag < 20 && this.ECall_Req.phys == 1) {
+    else if (this.ECall_Req.phys == 1) {
       @sysvar::IVI::sv_stop_message = 1;  //정차가 완료되었습니다.
-      call_flag++;
-    } 
-    else if (call_flag == 20 && this.ECall_Req.phys == 1) {
-      @sysvar::IVI::sv_stop_message = 2;   //신고가 접수되었습니다.
     } 
   }
-  else {
-    @sysvar::IVI::sv_EDSS_state = 0;
-    setControlVisibility("stop_situation","stop_message",0); 
+  else if (this.EDSS_Act.phys == 0 && this.ECall_Req.phys == 1) {
+    @sysvar::IVI::sv_stop_message = 2;   //신고가 접수되었습니다.
   }
 }
 
 on message Sever_119_Call {
   if (this.Call_119.phys == 1) {
     @sysvar::DMS::sv_DMS_CautionLv = 5;
+  }
+}
+
+on message GW_EMS_Engine_Data {
+ @sysvar::IVI::sv_RPM =  ((this.EMS_RPM_Data.phys) * 8000) / 255;
+}
+
+on timer surrounding
+{
+  //주변 차량 알림
+  if ($VCU_IVI_Msg::EDSS_Act==0 && $VCU_IVI_Msg::ECall_Req==1) {
+      if (@sysvar::BCM::moving_car == 20) {
+          @sysvar::BCM::moving_car++;
+      } else if (@sysvar::BCM::moving_car == 21) {
+          @sysvar::BCM::moving_car--;
+      } 
   }
 }
